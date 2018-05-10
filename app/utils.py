@@ -30,7 +30,7 @@ class TransportAPIWrapper:
 
         for route in json.loads(resp.json()):
             routes.update(
-                {route.get('Id'): {'id': route.get('Id'),
+                {route.get('Id'): {'internal_id': route.get('Id'),
                                    'name': route.get('Name'),
                                    'code': route.get('Code')}})
         return routes
@@ -48,7 +48,7 @@ class TransportAPIWrapper:
 
         for stop in stops_data:
             stops.update(
-                {stop.get('Id'): {'id': stop.get('Id'),
+                {stop.get('Id'): {'internal_id': stop.get('Id'),
                                   'name': stop.get('Name'),
                                   'code': stop.get('Code'),
                                   'location': (stop.get('Y'), stop.get('X'))}})

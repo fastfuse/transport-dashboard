@@ -19,6 +19,7 @@ class TransportAPIWrapper:
     """
     Wrapper for Lviv public transport API.
     """
+
     def get_all_routes(self):
         """
         Method to fetch all available routes.
@@ -29,10 +30,12 @@ class TransportAPIWrapper:
         resp = requests.get(ALL_ROUTES)
 
         for route in json.loads(resp.json()):
-            routes.update(
-                {route.get('Id'): {'id': route.get('Id'),
-                                   'name': route.get('Name'),
-                                   'code': route.get('Code')}})
+            id_ = route.get('Id')
+            name = route.get('Name')
+            code = route.get('Code')
+
+            routes.update({id_: {'id': id_, 'name': name, 'code': code}})
+
         return routes
 
     @staticmethod
@@ -47,11 +50,13 @@ class TransportAPIWrapper:
         stops = dict()
 
         for stop in stops_data:
-            stops.update(
-                {stop.get('Id'): {'id': stop.get('Id'),
-                                  'name': stop.get('Name'),
-                                  'code': stop.get('Code'),
-                                  'location': (stop.get('Y'), stop.get('X'))}})
+            id_ = stop.get('Id')
+            name = stop.get('Name')
+            code = stop.get('Code')
+            location = (stop.get('Y'), stop.get('X'))
+
+            stops.update({id_: {'id': id_, 'name': name,
+                                'code': code, 'location': location}})
         return stops
 
     def get_all_stops(self):
@@ -113,10 +118,5 @@ if __name__ == '__main__':
     r = t.get_all_routes()
     ss = t.get_all_stops()
     # s = t.get_route_stops(713027)
-
     # m = t.monitor_route(713027)
-    m = t.monitor_stop('36628')
-
     t.monitor_stop('0052')
-
-    print()

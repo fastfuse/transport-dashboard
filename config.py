@@ -1,17 +1,11 @@
-
 import os
 
 
-class Config(object):
+class Config:
     DEBUG = False
     CSRF_ENABLED = True
     SECRET_KEY = os.environ.get('SECRET_KEY',
-                                'your-secret-key')
-
-    # >>> import os
-    # >>> os.urandom(24)
-    # '\xfd{H\xe5<\x95\xf9\xe3\x96.5\xd1\x01O<!\xd5\xa2\xa0\x9fR"\xa1\xa8'
-    # Just take that thing and copy/paste into your code and you're done.
+                                '(#\x94k\xd9W\xf0\x9f\x9cj\xe8\x1c\xfd\xa2\xcd\x94)B\xe2H\xca\x118\x1a')
 
 
 class DevelopmentConfig(Config):

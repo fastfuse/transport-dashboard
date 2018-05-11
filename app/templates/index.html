@@ -20,7 +20,6 @@
 
 <body>
 
-
   <!-- Modal -->
   <div class="modal fade" id="exampleModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
     <div class="modal-dialog" role="document">
@@ -71,180 +70,47 @@
   <div class="container-fluid">
     <div class="row">
 
-    <!-- {{ data }} -->
-
       {% for stop in data %}
 
-      <div class="col-md-4 col-6">
-            <div class="card border-primary mb-3">
-              <div class="card-header">
-                <h4>Stop: {{ stop['code'] }}</h4>
-              </div>
-              <div class="card-body">
-                <table class="table table-hover">
-                  <thead>
-                    <tr>
-                      <th scope="col">Route</th>
-                      <th scope="col">From</th>
-                      <th scope="col">To</th>
-                      <th scope="col">Time</th>
-                    </tr>
-                  </thead>
-
-                  <tbody>
-
-                  {% for item in stop['data'][:5] %}
-
-                    <tr>
-                      <td>{{ item['route_name'] }}</td>
-                      <td>{{ item['from'] }}</td>
-                      <td>{{ item['to'] }}</td>
-                      <td>{{ item['time_to_point'] }}</td>
-                    </tr>
-
-                  {% endfor %}
-
-                  </tbody>
-                </table> 
-              </div>
-            </div>
+      <div class="col-sm">
+        <div class="card border-primary mb-3">
+          <div class="card-header">
+            <h4>Stop: {{ stop['code'] }}</h4>
           </div>
+          <div class="card-body">
+            <table class="table table-hover">
+              <thead>
+                <tr>
+                  <th scope="col">Route</th>
+                  <th scope="col">From</th>
+                  <th scope="col">To</th>
+                  <th scope="col">Time</th>
+                </tr>
+              </thead>
 
+              <tbody>
 
-    {% endfor %}  
+              {% for item in stop['data'][:5] %}
 
+                <tr>
+                  <td>{{ item['route_name'] }}</td>
+                  <td>{{ item['from'] }}</td>
+                  <td>{{ item['to'] }}</td>
+                  <td>{{ item['time_to_point'] }}</td>
+                </tr>
 
-<!--         <div class="col-md-6">
-          <div class="card border-primary mb-3">
-            <div class="card-header">
-              <h4>Stop: {some_stop}</h4>
-            </div>
-            <div class="card-body">
-              <table class="table table-hover">
-                <thead>
-                  <tr>
-                    <th scope="col">Type</th>
-                    <th scope="col">Column heading</th>
-                    <th scope="col">Column heading</th>
-                    <th scope="col">Column heading</th>
-                  </tr>
-                </thead>
-                <tbody>
-                  <tr class="table-active">
-                    <th scope="row">Active</th>
-                    <td>Column content</td>
-                    <td>Column content</td>
-                    <td>Column content</td>
-                  </tr>
-                  <tr>
-                    <th scope="row">Default</th>
-                    <td>Column content</td>
-                    <td>Column content</td>
-                    <td>Column content</td>
-                  </tr>
-                  <tr class="table-primary">
-                    <th scope="row">Primary</th>
-                    <td>Column content</td>
-                    <td>Column content</td>
-                    <td>Column content</td>
-                  </tr>
-                  <tr class="table-success">
-                    <th scope="row">Success</th>
-                    <td>Column content</td>
-                    <td>Column content</td>
-                    <td>Column content</td>
-                  </tr>
-                  <tr class="table-danger">
-                    <th scope="row">Danger</th>
-                    <td>Column content</td>
-                    <td>Column content</td>
-                    <td>Column content</td>
-                  </tr>
-                  <tr class="table-warning">
-                    <th scope="row">Warning</th>
-                    <td>Column content</td>
-                    <td>Column content</td>
-                    <td>Column content</td>
-                  </tr>
-                  <tr class="table-info">
-                    <th scope="row">Info</th>
-                    <td>Column content</td>
-                    <td>Column content</td>
-                    <td>Column content</td>
-                  </tr>
-                </tbody>
-              </table> 
-            </div>
+              {% endfor %}
+
+              </tbody>
+            </table> 
           </div>
         </div>
- -->
-<!--         <div class="col-md-6">
-          <div class="card border-primary mb-3">
-            <div class="card-header">
-              <h4>Stop: {some_stop}</h4>
-            </div>
-            <div class="card-body">
-              <table class="table table-hover">
-                <thead>
-                  <tr>
-                    <th scope="col">Type</th>
-                    <th scope="col">Column heading</th>
-                    <th scope="col">Column heading</th>
-                    <th scope="col">Column heading</th>
-                  </tr>
-                </thead>
-                <tbody>
-                  <tr class="table-active">
-                    <th scope="row">Active</th>
-                    <td>Column content</td>
-                    <td>Column content</td>
-                    <td>Column content</td>
-                  </tr>
-                  <tr>
-                    <th scope="row">Default</th>
-                    <td>Column content</td>
-                    <td>Column content</td>
-                    <td>Column content</td>
-                  </tr>
-                  <tr class="table-primary">
-                    <th scope="row">Primary</th>
-                    <td>Column content</td>
-                    <td>Column content</td>
-                    <td>Column content</td>
-                  </tr>
-                  <tr class="table-success">
-                    <th scope="row">Success</th>
-                    <td>Column content</td>
-                    <td>Column content</td>
-                    <td>Column content</td>
-                  </tr>
-                  <tr class="table-danger">
-                    <th scope="row">Danger</th>
-                    <td>Column content</td>
-                    <td>Column content</td>
-                    <td>Column content</td>
-                  </tr>
-                  <tr class="table-warning">
-                    <th scope="row">Warning</th>
-                    <td>Column content</td>
-                    <td>Column content</td>
-                    <td>Column content</td>
-                  </tr>
-                  <tr class="table-info">
-                    <th scope="row">Info</th>
-                    <td>Column content</td>
-                    <td>Column content</td>
-                    <td>Column content</td>
-                  </tr>
-                </tbody>
-              </table> 
-            </div>
-          </div>
-        </div> -->
+      </div>
 
-
+    {% endfor %}
 
     </div>
+
   </div>
 
 

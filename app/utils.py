@@ -57,7 +57,7 @@ class TransportAPIWrapper:
 
             stops.update({id_: {'id': id_, 'name': name,
                                 'code': code, 'location': location}})
-        return stops
+            return stops
 
     def get_all_stops(self):
         """

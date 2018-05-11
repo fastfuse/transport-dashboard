@@ -1,4 +1,4 @@
-from app import app
+from app import app, models
 from flask import render_template, jsonify
 from app.utils import TransportAPIWrapper
 
@@ -18,6 +18,16 @@ def index():
 
     return render_template('index.html', data=stops_info)
 
+
+@app.route('/test')
+def t():
+    users = models.User.query.all()
+    for u in users:
+        print(u.name, u.id)
+    return render_template('index.html', users=users)
+
+
+# ===============
 
 @app.route('/api/stops')
 def stops_api():

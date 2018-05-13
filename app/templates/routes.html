@@ -1,0 +1,61 @@
+{% extends "base.html" %}
+
+{% block content %}
+
+  <div class="col">
+
+  {% if routes %}
+
+    <h2 class="text-center text-info">Routes ({{ routes | count }})</h2>
+
+    <div class="input-group col-md-8 offset-md-2 col">
+      <input type="text" class="form-control" id="searchInput" placeholder="Search">
+    </div>
+
+    <br>
+
+    <div class="row">
+      <div class="col-md-8 offset-md-2 col">
+        <div class="table">
+          <table class="table table-hover">
+            <tbody id="fbody">
+
+            {% for id, route in routes.items() %}
+
+              <tr>
+                <td>{{ route.name }}</td>
+                <td><button type="button" class="btn btn-info">Add</button></td>
+                <td><button type="button" class="btn btn-info">Show on map</button></td>
+                {# <td><a href="{{ url_for('route_info', route_code=route.Id) }}" class="btn btn-primary btn-sm btn-resposive">На карті</a></td> #}
+                {# <td><a href="{{ url_for('stops_on_route', route_code=route.Id) }}" class="btn btn-primary btn-sm btn-resposive">Зупинки</a></td> #}
+              </tr>
+
+            {% endfor %}
+
+            </tbody>
+
+          </table>
+        </div>
+      </div>
+    </div>
+
+
+    <script>
+
+      $("#searchInput").keyup(function() {
+        var rows = $("#fbody").find("tr").hide();
+        var data = this.value.split(" ");
+
+        $.each(data, function(i, v) {
+          rows.filter(":contains('" + v + "')").show();
+        });
+
+      });
+
+    </script>
+
+  {% endif %}
+
+  </div>
+
+{% endblock content %}

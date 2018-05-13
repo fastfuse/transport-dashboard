@@ -34,7 +34,7 @@ class TransportAPIWrapper:
             name = route.get('Name')
             code = route.get('Code')
 
-            routes.update({id_: {'id': id_, 'name': name, 'code': code}})
+            routes.update({id_: {'internal_id': id_, 'name': name, 'code': code}})
 
         return routes
 
@@ -55,9 +55,9 @@ class TransportAPIWrapper:
             code = stop.get('Code')
             location = (stop.get('Y'), stop.get('X'))
 
-            stops.update({id_: {'id': id_, 'name': name,
+            stops.update({id_: {'internal_id': id_, 'name': name,
                                 'code': code, 'location': location}})
-            return stops
+        return stops
 
     def get_all_stops(self):
         """
@@ -119,4 +119,4 @@ if __name__ == '__main__':
     ss = t.get_all_stops()
     # s = t.get_route_stops(713027)
     # m = t.monitor_route(713027)
-    t.monitor_stop('0052')
+    t.monitor_stop('0191')

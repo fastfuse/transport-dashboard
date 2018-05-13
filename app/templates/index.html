@@ -1,120 +1,60 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-  <meta charset="UTF-8">
-  <meta http-equiv="X-UA-Compatible" content="IE=edge">
-  <meta name="viewport" content="initial-scale=1,user-scalable=no,maximum-scale=1,width=device-width">
-  <meta name="mobile-web-app-capable" content="yes">
-  <meta name="apple-mobile-web-app-capable" content="yes">
+{% extends "base.html" %}
 
-  <title>Transport Dashboard</title>
+{% block content %}
+  
+{% if data %}
 
-  <link rel="stylesheet" href="/static/css/bootstrap.css">
+    {# {{ data }}   #}
+  {% for stop in data %}
 
-  <script src="https://code.jquery.com/jquery-3.2.1.slim.min.js" integrity="sha384-KJ3o2DKtIkvYIK3UENzmM7KCkRr/rE9/Qpg6aAZGJwFDMVNA/GpGFF93hXpG5KkN" crossorigin="anonymous"></script>
-  <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.12.9/umd/popper.min.js" integrity="sha384-ApNbgh9B+Y1QKtv3Rn7W3mgPxhU9K/ScQsAP7hUibX39j7fakFPskvXusvfa0b4Q" crossorigin="anonymous"></script>
-  <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/js/bootstrap.min.js" integrity="sha384-JZR6Spejh4U02d8jOt6vLEHfe/JQGiRRSQQxSfFWpi1MquVdAyjUar5+76PVCmYl" crossorigin="anonymous"></script>
-
-</head>
-
-
-<body>
-
-  <!-- Modal -->
-  <div class="modal fade" id="exampleModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
-    <div class="modal-dialog" role="document">
-      <div class="modal-content">
-        <div class="modal-header">
-          <h5 class="modal-title" id="exampleModalLabel">Choose stop</h5>
-          <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-            <span aria-hidden="true">&times;</span>
-          </button>
+    <div class="col-md-6 col mb-3">
+      <div class="card border-primary">
+        <div class="card-header">
+          <h4>Stop: {{ stop.stop.name }}</h4>
         </div>
-        <div class="modal-body">
-          <select class="form-control" id="exampleSelect1">
-            <option>1</option>
-            <option>2</option>
-            <option>3</option>
-            <option>4</option>
-            <option>5</option>
-          </select>
-        </div>
-        <div class="modal-footer">
-          <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
-          <button type="button" class="btn btn-primary">Save</button>
+        <div class="card-body">
+          <table class="table table-hover">
+            <thead>
+              <tr>
+                <th scope="col">Route</th>
+                <th scope="col">From</th>
+                <th scope="col">To</th>
+                <th scope="col">Time</th>
+              </tr>
+            </thead>
+
+            <tbody>
+
+            {% for item in stop.data[:7] %}
+
+              <tr>
+                <td>{{ item['route_name'] }}</td>
+                <td>{{ item['from'] }}</td>
+                <td>{{ item['to'] }}</td>
+                <td>{{ item['time_to_point'] }}</td>
+              </tr>
+
+            {% endfor %}
+
+            </tbody>
+          </table> 
         </div>
       </div>
     </div>
-  </div>
+
+  {% endfor %}
 
 
-  <nav class="navbar navbar-expand-lg navbar-dark bg-primary">
-    <div class="container">
-      <a class="navbar-brand" href="#">Dashboard</a>
+  {% else %}
 
-      <div class="collapse navbar-collapse" id="navbarColor01">
-        <ul class="navbar-nav mr-auto">
-          <li class="nav-item active">
-            <a class="nav-link" href="#"></a>
-          </li>
-        </ul>
+  <h4>No stops added to dashboard.</h4>
 
-        <button type="button" class="btn btn-info" data-toggle="modal" data-target="#exampleModal">Add stop</button>
-      </div>
-
-    </div>
-  </nav>
-
-  <br>
-
-  <div class="container-fluid">
-    <div class="row">
-
-    {{ users }}
-
-      {% for stop in data %}
-
-      <div class="col-sm">
-        <div class="card border-primary mb-3">
-          <div class="card-header">
-            <h4>Stop: {{ stop['code'] }}</h4>
-          </div>
-          <div class="card-body">
-            <table class="table table-hover">
-              <thead>
-                <tr>
-                  <th scope="col">Route</th>
-                  <th scope="col">From</th>
-                  <th scope="col">To</th>
-                  <th scope="col">Time</th>
-                </tr>
-              </thead>
-
-              <tbody>
-
-              {% for item in stop['data'][:5] %}
-
-                <tr>
-                  <td>{{ item['route_name'] }}</td>
-                  <td>{{ item['from'] }}</td>
-                  <td>{{ item['to'] }}</td>
-                  <td>{{ item['time_to_point'] }}</td>
-                </tr>
-
-              {% endfor %}
-
-              </tbody>
-            </table> 
-          </div>
-        </div>
-      </div>
-
-    {% endfor %}
-
-    </div>
-
-  </div>
+{% endif %}
 
 
-</body>
-</html>
+
+
+
+{% endblock content %}
+
+

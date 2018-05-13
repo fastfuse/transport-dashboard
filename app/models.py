@@ -13,3 +13,8 @@ class Stop(db.Model):
     name = db.Column('name', db.Unicode)
     code = db.Column('code', db.String)
     # location = db.Column('location', db.String)
+
+    def __init__(self, internal_id, name, code):
+        self.internal_id = internal_id
+        self.name = name
+        self.code = code

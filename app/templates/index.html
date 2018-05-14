@@ -10,10 +10,10 @@
     <div class="col-md-6 col mb-3">
       <div class="card border-primary">
         <div class="card-header">
-          <h4>Stop: {{ stop.stop.name }}</h4>
+          <h4>Stop: {{ stop.name }}</h4>
         </div>
-        <div class="card-body">
-          <table class="table table-hover">
+        <div class="card-body" id="{{ stop.code }}">
+{#           <table class="table table-hover">
             <thead>
               <tr>
                 <th scope="col">Route</th>
@@ -37,7 +37,7 @@
             {% endfor %}
 
             </tbody>
-          </table> 
+          </table> #}
         </div>
       </div>
     </div>
@@ -51,10 +51,4 @@
 
 {% endif %}
 
-
-
-
-
 {% endblock content %}
-
-

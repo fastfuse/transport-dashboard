@@ -1,6 +1,8 @@
 import requests
 import json
 
+from app import app
+
 BASE_URL = 'http://82.207.107.126:13541/SimpleRide/LAD/SM.WebApi/api'
 ALL_ROUTES = BASE_URL + '/CompositeRoute'
 ROUTE_PATH = BASE_URL + '/path/?code=LAD|'
@@ -34,7 +36,8 @@ class TransportAPIWrapper:
             name = route.get('Name')
             code = route.get('Code')
 
-            routes.update({id_: {'internal_id': id_, 'name': name, 'code': code}})
+            routes.update(
+                {id_: {'internal_id': id_, 'name': name, 'code': code}})
 
         return routes
 
@@ -110,6 +113,13 @@ class TransportAPIWrapper:
             stop_data.append(vehicle_info)
 
         return stop_data
+
+
+# ===================== Custom Jinja template filters
+
+@app.template_filter()
+def to_minutes(seconds):
+    return round(seconds / 60)
 
 
 if __name__ == '__main__':

@@ -9,6 +9,7 @@ from app.utils import TransportAPIWrapper
 transport = TransportAPIWrapper()
 
 # ======================== Admin page
+
 admin.add_view(ModelView(models.Stop, db.session))
 
 
@@ -18,6 +19,8 @@ admin.add_view(ModelView(models.Stop, db.session))
 @celery.task(bind=True)
 def monitor_stop(self, stop_code):
     info = transport.monitor_stop(stop_code)
+
+    # when ready - send data to UI by socket
 
     return info
 
@@ -34,15 +37,16 @@ def index():
     selected_stops = models.Stop.query.all()
 
     for stop in selected_stops:
-        info = monitor_stop(stop.code)
-        stops_info.append({'stop': stop, 'data': info})
+        monitor_stop.delay(stop.code)
+        # info = monitor_stop(stop.code)
+        # stops_info.append({'stop': stop, 'data': info})
+        stops_info.append(stop)
 
         # tasks.append(monitor_stop(stop.code))
 
     return render_template('index.html', data=stops_info)
 
 
-# todo: cache
 @app.route('/stops')
 def show_all_stops():
     if 'stops' in session.keys():
@@ -54,7 +58,6 @@ def show_all_stops():
     return render_template('stops.html', stops=stops)
 
 
-# todo: cache
 @app.route('/routes')
 def show_all_routes():
     if 'routes' in session.keys():
@@ -98,15 +101,7 @@ def routes_api():
     routes = transport.get_all_routes()
     return jsonify(count=len(routes), routes=routes)
 
-
 # TODO
 # * celery + sockets;
 # * show on map: map w/ marker (modal);
 #
-
-
-# ===============
-
-@app.template_filter()
-def to_minutes(seconds):
-    return round(seconds / 60)

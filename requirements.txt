@@ -1,2 +1,6 @@
+celery
 Flask
 Flask-Script
+flask-migrate
+flask-admin
+redis

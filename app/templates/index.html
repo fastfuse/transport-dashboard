@@ -31,7 +31,7 @@
                 <td>{{ item['route_name'] }}</td>
                 <td>{{ item['from'] }}</td>
                 <td>{{ item['to'] }}</td>
-                <td>{{ item['time_to_point'] }}</td>
+                <td>{{ item['time_to_point'] | to_minutes }}</td>
               </tr>
 
             {% endfor %}

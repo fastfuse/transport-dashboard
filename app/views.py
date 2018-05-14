@@ -2,25 +2,42 @@ import json
 
 from flask_admin.contrib.sqla import ModelView
 
-from app import app, models, db, admin
+from app import app, models, db, admin, celery
 from flask import request, render_template, jsonify, session, url_for, redirect
 from app.utils import TransportAPIWrapper
 
 transport = TransportAPIWrapper()
 
+# ======================== Admin page
 admin.add_view(ModelView(models.Stop, db.session))
 
+
+# ======================= celery tasks
+
+
+@celery.task(bind=True)
+def monitor_stop(self, stop_code):
+    info = transport.monitor_stop(stop_code)
+
+    return info
+
+
+# ======================== Views
 
 @app.route('/')
 @app.route('/dashboard')
 def index():
     stops_info = list()
 
+    tasks = list()
+
     selected_stops = models.Stop.query.all()
 
     for stop in selected_stops:
-        info = transport.monitor_stop(stop.code)
+        info = monitor_stop(stop.code)
         stops_info.append({'stop': stop, 'data': info})
+
+        # tasks.append(monitor_stop(stop.code))
 
     return render_template('index.html', data=stops_info)
 
@@ -33,7 +50,6 @@ def show_all_stops():
     else:
         stops = transport.get_all_stops()
         session['stops'] = json.dumps(stops)
-        print(session.keys())
 
     return render_template('stops.html', stops=stops)
 
@@ -64,9 +80,8 @@ def add_stop():
 
 @app.route('/test')
 def t():
-    users = models.Stop.query.all()
-    for u in users:
-        print(u.name, u.id)
+    stop_code = '0247'
+
     return render_template('index.html', users=users)
 
 
@@ -88,3 +103,10 @@ def routes_api():
 # * celery + sockets;
 # * show on map: map w/ marker (modal);
 #
+
+
+# ===============
+
+@app.template_filter()
+def to_minutes(seconds):
+    return round(seconds / 60)

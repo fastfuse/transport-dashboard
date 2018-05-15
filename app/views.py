@@ -1,9 +1,12 @@
 import json
+import os
 
-from flask_admin.contrib.sqla import ModelView
-
-from app import app, models, db, admin, celery
 from flask import request, render_template, jsonify, session, url_for, redirect
+from flask_admin.contrib.sqla import ModelView
+# from flask_socketio import emit
+from requests import post
+
+from app import app, models, db, admin, celery, socketio
 from app.utils import TransportAPIWrapper
 
 transport = TransportAPIWrapper()
@@ -15,14 +18,22 @@ admin.add_view(ModelView(models.Stop, db.session))
 
 # ======================= celery tasks
 
-
 @celery.task(bind=True)
 def monitor_stop(self, stop_code):
-    info = transport.monitor_stop(stop_code)
+    print(stop_code)
+    with app.app_context():
+        r = post(stop_code, json={'kek': 'lol'})
+        # info = transport.monitor_stop(stop_code)
+
+
+    # with app.app_context():
+    #     print('kkkkkkkkkk')
+    #     emit('data update', {'data': 'fsss'}, namespace='/dashboard')
+    #     print('wwwwwwwww')
 
     # when ready - send data to UI by socket
 
-    return info
+    return r.status_code
 
 
 # ======================== Views
@@ -36,8 +47,11 @@ def index():
 
     selected_stops = models.Stop.query.all()
 
+    # cur_app = current_app._get_current_object()
+
     for stop in selected_stops:
-        monitor_stop.delay(stop.code)
+
+        monitor_stop.apply_async(args=[url_for('test', _external=True)])
         # info = monitor_stop(stop.code)
         # stops_info.append({'stop': stop, 'data': info})
         stops_info.append(stop)
@@ -81,11 +95,18 @@ def add_stop():
     return redirect(url_for('index'))
 
 
-@app.route('/test')
-def t():
-    stop_code = '0247'
+@app.route('/test', methods=['POST'])
+def test():
+    # d = request.get_json()
+    with app.app_context():
+        socketio.emit('update', {'data': 'fsss'}, namespace='/dashboard')
 
-    return render_template('index.html', users=users)
+    return render_template('index.html')
+
+
+@socketio.on('connect', namespace='/dashboard')
+def on_connect():
+    socketio.emit('update', {'data': 'Connected'})
 
 
 # =============== dev purposes

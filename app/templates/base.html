@@ -85,6 +85,26 @@
 
   </div>
 
+<script>
+
+  $(document).ready(function(){
+          var socket = io.connect('http://' + document.domain + ':' + location.port + '/dashboard');
+
+
+          // socket.on('connect', function(msg) {
+          //   console.log('dsdsdsd');
+          //   socket.emit('connect');
+          // });
+            socket.on('connect', function() {
+                socket.emit('my_event', {data: 'I\'m connected!'});
+            });
+
+          socket.on('update', function(msg) {
+            console.log(msg)
+          });
+  });
+
+</script>
 
 </body>
 </html>

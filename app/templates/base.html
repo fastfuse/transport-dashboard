@@ -11,6 +11,8 @@
 
   <link rel="stylesheet" href="/static/css/bootstrap.css">
 
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
+
   <script src="https://code.jquery.com/jquery-3.2.1.slim.min.js" integrity="sha384-KJ3o2DKtIkvYIK3UENzmM7KCkRr/rE9/Qpg6aAZGJwFDMVNA/GpGFF93hXpG5KkN" crossorigin="anonymous"></script>
   <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.12.9/umd/popper.min.js" integrity="sha384-ApNbgh9B+Y1QKtv3Rn7W3mgPxhU9K/ScQsAP7hUibX39j7fakFPskvXusvfa0b4Q" crossorigin="anonymous"></script>
   <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/js/bootstrap.min.js" integrity="sha384-JZR6Spejh4U02d8jOt6vLEHfe/JQGiRRSQQxSfFWpi1MquVdAyjUar5+76PVCmYl" crossorigin="anonymous"></script>
@@ -90,17 +92,32 @@
   $(document).ready(function(){
           var socket = io.connect('http://' + document.domain + ':' + location.port + '/dashboard');
 
-
-          // socket.on('connect', function(msg) {
-          //   console.log('dsdsdsd');
-          //   socket.emit('connect');
-          // });
             socket.on('connect', function() {
-                socket.emit('my_event', {data: 'I\'m connected!'});
+                socket.emit('my_event', {msg: 'Client ACK'});
             });
+
+          socket.on('conection_update', function(msg) {
+            console.log(msg)
+          });
+
 
           socket.on('update', function(msg) {
             console.log(msg)
+
+            var table = $('<table class="table table-hover"><tbody></tbody></table>')
+
+            msg['info'].forEach(function(item){
+              console.log(item)
+              var row = $('<tr><td>' + item.route_name + '</td><td>' + item.from + '</td><td>' + item.to + '</td><td>' + item.time_to_point + '</td></tr>');
+
+              table.append(row)
+            });
+
+            $('i#'+msg.stop+'.fa').remove();
+
+            $('#' + msg.stop).append(table);
+
+
           });
   });
 

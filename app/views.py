@@ -4,34 +4,16 @@ from flask import request, render_template, jsonify, session, url_for, redirect
 from flask_admin.contrib.sqla import ModelView
 from flask_socketio import emit
 
-from app import app, models, db, admin, celery, socketio
+from app import app, models, db, admin, socketio
 from app.utils import TransportAPIWrapper
+from app.tasks import monitor_stop
 
-# api wrapper object
+# Lviv public transport API wrapper object
 transport = TransportAPIWrapper()
 
 # ======================== Admin page
 
 admin.add_view(ModelView(models.Stop, db.session))
-
-
-# ======================= celery tasks
-
-@celery.task
-def monitor_stop(stop_code):
-    # TODO: rename
-    # when ready - send data to UI through socket
-
-    info = transport.monitor_stop(stop_code)
-
-    data = {
-        'stop': stop_code,
-        'info': info
-    }
-
-    socketio.emit('update', data, namespace='/dashboard')
-
-    return True
 
 
 # ======================== Views
@@ -96,12 +78,12 @@ def test():
 
 @socketio.on('connect', namespace='/dashboard')
 def on_connect():
-    emit('update', {'data': 'Connected', 'count': 0})
+    emit('conection_update', {'msg': 'Server ACK'})
 
 
 @socketio.on('my_event', namespace='/dashboard')
 def on_message(message):
-    emit('update', {'data': message['data'], 'count': 2})
+    emit('conection_update', {'msg': message['msg']})
 
 
 # =============== dev purposes

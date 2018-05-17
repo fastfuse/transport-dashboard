@@ -1,10 +1,10 @@
 import json
 
-from flask import request, render_template, jsonify, session, url_for, redirect
+from flask import request, render_template, jsonify, url_for, redirect
 from flask_admin.contrib.sqla import ModelView
 from flask_socketio import emit
 
-from app import app, models, db, admin, socketio
+from app import app, models, db, admin, socketio, redis
 from app.utils import TransportAPIWrapper
 from app.tasks import monitor_stop
 
@@ -34,22 +34,22 @@ def index():
 
 @app.route('/stops')
 def show_all_stops():
-    if 'stops' in session.keys():
-        stops = json.loads(session.get('stops'))
+    if b'stops' in redis.keys():
+        stops = json.loads(redis.get('stops').decode())
     else:
         stops = transport.get_all_stops()
-        session['stops'] = json.dumps(stops)
+        redis.set('stops', json.dumps(stops))
 
     return render_template('stops.html', stops=stops)
 
 
 @app.route('/routes')
 def show_all_routes():
-    if 'routes' in session.keys():
-        routes = json.loads(session.get('routes'))
+    if b'routes' in redis.keys():
+        routes = json.loads(redis.get('routes').decode())
     else:
         routes = transport.get_all_routes()
-        session['routes'] = json.dumps(routes)
+        redis.set('routes', json.dumps(routes))
 
     return render_template('routes.html', routes=routes)
 
@@ -78,12 +78,12 @@ def test():
 
 @socketio.on('connect', namespace='/dashboard')
 def on_connect():
-    emit('conection_update', {'msg': 'Server ACK'})
+    emit('connection_update', {'msg': 'Server ACK'})
 
 
 @socketio.on('my_event', namespace='/dashboard')
 def on_message(message):
-    emit('conection_update', {'msg': message['msg']})
+    emit('connection_update', {'msg': message['msg']})
 
 
 # =============== dev purposes
@@ -100,5 +100,6 @@ def routes_api():
     return jsonify(count=len(routes), routes=routes)
 
 # TODO
-# * celery + sockets;
-# * show on map: map w/ marker (modal);
+# fix socket duplication problem;
+# cleanup and deploy v.0.1
+# show on map: map w/ marker (modal);

@@ -54,6 +54,18 @@ def show_all_routes():
     return render_template('routes.html', routes=routes)
 
 
+@app.route('/route/<route_id>')
+def show_route_stops(route_id):
+    # todo: check if exist
+    routes = json.loads(redis.get('routes').decode())
+
+    route = routes.get(route_id)
+
+    route_stops = transport.get_route_stops(route_id)
+
+    return render_template('route_stops.html', route=route, stops=route_stops)
+
+
 @app.route('/add_stop', methods=["POST"])
 def add_stop():
     stop = models.Stop(internal_id=request.form['internal_id'],
@@ -100,6 +112,7 @@ def routes_api():
     return jsonify(count=len(routes), routes=routes)
 
 # TODO
+# !!!!!! store routes and stops to DB and periodically refresh;
 # fix socket duplication problem;
 # cleanup and deploy v.0.1
 # show on map: map w/ marker (modal);

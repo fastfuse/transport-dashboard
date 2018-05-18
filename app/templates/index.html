@@ -72,7 +72,6 @@
               console.log(msg)
             });
 
-
             socket.on('update', function(msg) {
               var table = $('<table class="table table-hover"><tbody></tbody></table>')
 
@@ -86,7 +85,6 @@
               $('div#s'+msg.stop).remove();
 
               $('#' + msg.stop).append(table);
-
 
             });
     });

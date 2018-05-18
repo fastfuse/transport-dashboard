@@ -1,0 +1,34 @@
+{% extends "base.html" %}
+
+{% block content %}
+
+  <div class="col-md-8 offset-md-2 col">
+
+    <div class="row">
+      <div class="col-md-8 offset-md-2 col">
+        <h2 class="text-center text-info">{{ route.name }}</h2>
+
+        <div class="table">
+          <table class="table table-hover">
+            <tbody id="fbody">
+
+            {% for id, stop in stops.items() %}
+
+              <tr>
+                <td>{{ stop.name }}</td>
+                <td><button type="button" class="btn btn-info">Info</button></td>
+                <td><button type="button" class="btn btn-info">Show on map</button></td>
+              </tr>
+
+            {% endfor %}
+
+            </tbody>
+
+          </table>
+        </div>
+      </div>
+    </div>
+
+  </div>
+
+{% endblock content %}

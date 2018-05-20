@@ -16,7 +16,15 @@
 
               <tr>
                 <td>{{ stop.name }}</td>
-                <td><button type="button" class="btn btn-info">Info</button></td>
+                <td>
+                  <form action="{{ url_for('add_stop') }}" method="POST">
+                    <input type="hidden" name="internal_id" value="{{ stop.internal_id }}">
+                    <input type="hidden" name="name" value="{{ stop.name }}">
+                    <input type="hidden" name="code" value="{{ stop.code }}">
+                    <button type="submit" class="btn btn-info">Add</button>
+                  </form>
+                </td>
+
                 <td><button type="button" class="btn btn-info">Show on map</button></td>
               </tr>
 

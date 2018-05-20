@@ -26,7 +26,7 @@ def index():
     selected_stops = models.Stop.query.all()
 
     for stop in selected_stops:
-        monitor_stop.apply_async([stop.code], countdown=2)
+        monitor_stop.apply_async([stop.code], countdown=1)
         stops_info.append(stop)
 
     return render_template('index.html', data=stops_info)
@@ -45,25 +45,56 @@ def show_all_stops():
 
 @app.route('/routes')
 def show_all_routes():
-    if b'routes' in redis.keys():
-        routes = json.loads(redis.get('routes').decode())
-    else:
+    """
+    List all routes.
+    """
+
+    routes = redis.get('routes')
+
+    if not routes:
         routes = transport.get_all_routes()
+        # cache
         redis.set('routes', json.dumps(routes))
+    else:
+        routes = json.loads(routes.decode())
 
     return render_template('routes.html', routes=routes)
 
 
 @app.route('/route/<route_id>')
 def show_route_stops(route_id):
-    # todo: check if exist
-    routes = json.loads(redis.get('routes').decode())
+    """
+    List all stops on route.
+    """
+    cache_key = f'route_{route_id}'
+
+    routes = redis.get('routes')
+
+    if not routes:
+        routes = transport.get_all_routes()
+        # cache
+        redis.set('routes', json.dumps(routes))
+    else:
+        routes = json.loads(routes.decode())
 
     route = routes.get(route_id)
 
-    route_stops = transport.get_route_stops(route_id)
+    if cache_key.encode() in redis.keys():
+        route_stops = json.loads(redis.get(cache_key).decode())
+    else:
+        route_stops = transport.get_route_stops(route_id)
+        # store to cache
+        redis.set(cache_key, json.dumps(route_stops))
 
     return render_template('route_stops.html', route=route, stops=route_stops)
+
+
+@app.route('/route_map/<route_id>')
+def show_route_map(route_id):
+    """
+    Display route on map.
+    """
+    pass
 
 
 @app.route('/add_stop', methods=["POST"])
@@ -78,15 +109,22 @@ def add_stop():
     return redirect(url_for('index'))
 
 
-@app.route('/test', methods=['POST'])
-def test():
-    # with app.app_context():
-    #     socketio.emit('update', {'data': 'test'}, namespace='/dashboard')
+@app.route('/delete_stop', methods=['POST'])
+def delete_stop():
+    """
+    Delete stop from db.
+    """
+    stop_code = request.form.get('stop_code')
 
-    print('teeeeeeest')
+    stop = models.Stop.query.filter_by(code=stop_code).first()
 
-    return render_template('index.html')
+    db.session.delete(stop)
+    db.session.commit()
 
+    return jsonify(status='OK')
+
+
+# ============ socketio ACK
 
 @socketio.on('connect', namespace='/dashboard')
 def on_connect():
@@ -111,8 +149,9 @@ def routes_api():
     routes = transport.get_all_routes()
     return jsonify(count=len(routes), routes=routes)
 
+# =======================
 # TODO
-# !!!!!! store routes and stops to DB and periodically refresh;
-# fix socket duplication problem;
+# !!!!!! store routes and stops to DB and periodically refresh; or in cache!
+# fix socket duplication problem; (dirty hack; make more elegant solution)
 # cleanup and deploy v.0.1
 # show on map: map w/ marker (modal);

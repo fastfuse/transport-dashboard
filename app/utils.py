@@ -1,4 +1,6 @@
-from functools import lru_cache
+"""
+Utility functions
+"""
 
 import requests
 import json
@@ -73,7 +75,6 @@ class TransportAPIWrapper:
 
         return stops
 
-    @lru_cache()
     def get_route_stops(self, route_id):
         """
         Method to get all stops on route.
@@ -123,6 +124,9 @@ class TransportAPIWrapper:
 @app.template_filter()
 def to_minutes(seconds):
     return round(seconds / 60)
+
+
+# ======================
 
 
 if __name__ == '__main__':

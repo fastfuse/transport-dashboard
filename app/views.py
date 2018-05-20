@@ -124,6 +124,11 @@ def delete_stop():
     return jsonify(status='OK')
 
 
+@app.route('/test')
+def test():
+    return render_template('test.html')
+
+
 # ============ socketio ACK
 
 @socketio.on('connect', namespace='/dashboard')

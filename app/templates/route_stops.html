@@ -17,11 +17,11 @@
               <tr>
                 <td>{{ stop.name }}</td>
                 <td>
-                  <form action="{{ url_for('add_stop') }}" method="POST">
+                  <form class="add_stop">
                     <input type="hidden" name="internal_id" value="{{ stop.internal_id }}">
                     <input type="hidden" name="name" value="{{ stop.name }}">
                     <input type="hidden" name="code" value="{{ stop.code }}">
-                    <button type="submit" class="btn btn-info">Add</button>
+                    <button type="submit" class="btn btn-info add-btn">Add</button>
                   </form>
                 </td>
 
@@ -38,5 +38,24 @@
     </div>
 
   </div>
+
+
+  <script>
+
+    function addStop(ev) {
+      ev.preventDefault();
+
+      $.ajax({
+        method: 'POST',
+        url: {{ url_for('add_stop')|tojson }},
+        data: $(this).serialize()
+      });
+
+      $(this).children('button[type=submit]').prop('disabled', true);
+    };
+
+    $('.add_stop').on('submit', addStop);
+
+  </script>
 
 {% endblock content %}

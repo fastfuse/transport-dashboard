@@ -38,19 +38,14 @@
     </div>
 
 
-    <script>
+    {% block extra_js %}
 
-      $("#searchInput").keyup(function() {
-        var rows = $("#fbody").find("tr").hide();
-        var data = this.value.split(" ");
+      <script src="/static/js/search.js"></script>
 
-        $.each(data, function(i, v) {
-          rows.filter(":contains('" + v + "')").show();
-        });
+    {% endblock extra_js %}
 
-      });
 
-    </script>
+
 
   {% endif %}
 

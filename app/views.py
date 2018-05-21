@@ -106,7 +106,7 @@ def add_stop():
     db.session.add(stop)
     db.session.commit()
 
-    return redirect(url_for('index'))
+    return jsonify(status='OK')
 
 
 @app.route('/delete_stop', methods=['POST'])

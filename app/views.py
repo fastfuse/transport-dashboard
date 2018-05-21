@@ -126,7 +126,7 @@ def delete_stop():
 
 @app.route('/test')
 def test():
-    return render_template('test.html')
+    return render_template('test.html', data={'aa': 42, 'z': 'zzz'})
 
 
 # ============ socketio ACK

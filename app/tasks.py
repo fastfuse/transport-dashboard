@@ -1,6 +1,7 @@
 """
 Celery tasks
 """
+
 from app import celery, socketio
 from app.utils import TransportAPIWrapper
 
@@ -10,8 +11,10 @@ transport = TransportAPIWrapper()
 
 @celery.task
 def monitor_stop(stop_code):
+    """
+    Get stop monitoring data. When ready - send data to UI through socket.
+    """
     # TODO: rename
-    # when ready - send data to UI through socket
 
     info = transport.monitor_stop(stop_code)
 

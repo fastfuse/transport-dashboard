@@ -25,7 +25,7 @@
               <tr>
                 <td>{{ route.name }}</td>
                 <td><a href="{{ url_for('show_route_stops', route_id=route.internal_id) }}" class="btn btn-info">List stops</a></td>
-                <td><button type="button" class="btn btn-info" disabled>Show on map</button></td>
+                {# <td><button type="button" class="btn btn-info" disabled>Show on map</button></td> #}
               </tr>
 
             {% endfor %}

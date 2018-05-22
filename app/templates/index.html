@@ -54,7 +54,7 @@
 
           msg['info'].forEach(function(item){
             // console.log(item)
-            var row = $('<tr><td>' + item.route_name + '</td><td class="d-none d-sm-block">' + item.from + '</td><td>' + item.to + '</td><td>' + Math.floor(item.time_to_point / 60) + '</td></tr>');
+            var row = $('<tr><td>' + item.route_name + '</td><td class="d-none d-sm-table-cell">' + item.from + '</td><td class="d-none d-sm-table-cell">' + item.to + '</td><td>' + Math.floor(item.time_to_point / 60) + '</td></tr>');
 
             table.append(row)
           });

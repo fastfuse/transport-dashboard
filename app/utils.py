@@ -2,8 +2,9 @@
 Utility functions
 """
 
-import requests
 import json
+
+import requests
 
 from app import app
 

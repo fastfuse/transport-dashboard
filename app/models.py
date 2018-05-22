@@ -12,6 +12,7 @@ class Stop(db.Model):
     internal_id = db.Column('internal_id', db.String)
     name = db.Column('name', db.Unicode)
     code = db.Column('code', db.String)
+
     # location = db.Column('location', db.String)
 
     def __init__(self, internal_id, name, code):

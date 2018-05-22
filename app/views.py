@@ -1,12 +1,12 @@
 import json
 
-from flask import request, render_template, jsonify, url_for, redirect
+from flask import request, render_template, jsonify
 from flask_admin.contrib.sqla import ModelView
 from flask_socketio import emit
 
 from app import app, models, db, admin, socketio, redis
-from app.utils import TransportAPIWrapper
 from app.tasks import monitor_stop
+from app.utils import TransportAPIWrapper
 
 # Lviv public transport API wrapper object
 transport = TransportAPIWrapper()

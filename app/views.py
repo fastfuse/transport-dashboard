@@ -40,7 +40,9 @@ def show_all_stops():
         stops = transport.get_all_stops()
         redis.set('stops', json.dumps(stops))
 
-    return render_template('stops.html', stops=stops)
+    user_stops = [stop.code for stop in models.Stop.query.all()]
+
+    return render_template('stops.html', stops=stops, user_stops=user_stops)
 
 
 @app.route('/routes')
@@ -86,7 +88,9 @@ def show_route_stops(route_id):
         # store to cache
         redis.set(cache_key, json.dumps(route_stops))
 
-    return render_template('route_stops.html', route=route, stops=route_stops)
+    user_stops = [stop.code for stop in models.Stop.query.all()]
+
+    return render_template('route_stops.html', route=route, stops=route_stops, user_stops=user_stops)
 
 
 @app.route('/route_map/<route_id>')

@@ -35,10 +35,10 @@
                     <input type="hidden" name="internal_id" value="{{ stop.internal_id }}">
                     <input type="hidden" name="name" value="{{ stop.name }}">
                     <input type="hidden" name="code" value="{{ stop.code }}">
-                    <button type="submit" class="btn btn-info add-btn">Add</button>
+                    <button type="submit" class="btn btn-info add-btn" {% if stop.code in user_stops %} disabled title="Stop is already added"{% endif %}>Add</button>
                   </form>
 
-                <td><button type="button" class="btn btn-info">Show on map</button></td>
+                <td><button type="button" class="btn btn-info" disabled="">Show on map</button></td>
               </tr>
 
             {% endfor %}

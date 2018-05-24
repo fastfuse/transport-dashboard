@@ -25,7 +25,9 @@ socketio = SocketIO(app, message_queue=app.config['CELERY_BROKER_URL'])
 
 celery = Celery(app.name, broker=app.config['CELERY_BROKER_URL'])
 celery.conf.update(app.config)
-redis = Redis()
+redis = Redis(
+    host='redis://h:pe593df26d1d7fdb8665d72c08a142a5ab3c69847a548beeb8b100d7ad66b3ce0@ec2-54-88-234-13.compute-1.amazonaws.com',
+    port=25339)
 
 from app import views
 from app import models

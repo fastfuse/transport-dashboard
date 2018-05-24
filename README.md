@@ -3,15 +3,13 @@
 #### Development:
 * run:
 ```
-source run-dev.sh
+$ source run-dev.sh
 ```
-
 * run:
 ```
-honcho start
+$ honcho start
 ```
-
 * in second terminal run:
 ```
-redis-server
+$ redis-server
 ```

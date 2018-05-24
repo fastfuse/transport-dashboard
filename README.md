@@ -5,7 +5,7 @@
 * run:
 ```
 $ pip install -r requirements-dev.txt
-$ source run-dev.sh
+$ source env-dev.sh
 $ honcho start
 ```
 

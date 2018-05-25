@@ -14,9 +14,9 @@ class Config:
 
     SQLALCHEMY_TRACK_MODIFICATIONS = False
 
-    CELERY_BROKER_URL = os.environ.get('REDIS_URL', 'redis://h:pe593df26d1d7fdb8665d72c08a142a5ab3c69847a548beeb8b100d7ad66b3ce0@ec2-54-88-234-13.compute-1.amazonaws.com:25339')
-    CELERY_RESULT_BACKEND = os.environ.get('REDIS_URL',
-                                           'redis://h:pe593df26d1d7fdb8665d72c08a142a5ab3c69847a548beeb8b100d7ad66b3ce0@ec2-54-88-234-13.compute-1.amazonaws.com:25339')
+    REDIS_URL = os.environ.get('REDIS_URL', 'redis://localhost:6379/0')
+    CELERY_BROKER_URL = os.environ.get('REDIS_URL', 'redis://localhost:6379/0')
+    CELERY_RESULT_BACKEND = os.environ.get('REDIS_URL', 'redis://localhost:6379/0')
 
 
 class DevelopmentConfig(Config):

@@ -7,8 +7,7 @@ from flask_admin import Admin
 from flask_migrate import Migrate
 from flask_socketio import SocketIO
 from flask_sqlalchemy import SQLAlchemy
-from redis import Redis
-import redis
+import redis as r
 
 eventlet.monkey_patch()
 
@@ -21,17 +20,12 @@ app.config.from_object(os.environ['APP_SETTINGS'])
 db = SQLAlchemy(app)
 migrate = Migrate(app, db)
 
-# remove broker?
 socketio = SocketIO(app, message_queue=app.config['CELERY_BROKER_URL'])
 
 celery = Celery(app.name, broker=app.config['CELERY_BROKER_URL'])
 celery.conf.update(app.config)
-# redis = Redis(
-#     host='redis://h:pe593df26d1d7fdb8665d72c08a142a5ab3c69847a548beeb8b100d7ad66b3ce0@ec2-54-88-234-13.compute-1.amazonaws.com',
-#     port=25339)
 
-redis = redis.from_url(os.environ.get('REDIS_URL', 'redis://localhost:6379/0'))
-
+redis = r.from_url(app.config['REDIS_URL'])
 
 from app import views
 from app import models

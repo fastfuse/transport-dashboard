@@ -90,7 +90,8 @@ def show_route_stops(route_id):
 
     user_stops = [stop.code for stop in models.Stop.query.all()]
 
-    return render_template('route_stops.html', route=route, stops=route_stops, user_stops=user_stops)
+    return render_template('route_stops.html', route=route, stops=route_stops,
+                           user_stops=user_stops)
 
 
 @app.route('/route_map/<route_id>')
@@ -154,8 +155,7 @@ def routes_api():
     return jsonify(count=len(routes), routes=routes)
 
 # =======================
+
 # TODO
-# !!!!!! store routes and stops to DB and periodically refresh; or in cache!
 # fix socket duplication problem; (dirty hack; make more elegant solution)
-# cleanup and deploy v.0.1
 # show on map: map w/ marker (modal);

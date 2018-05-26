@@ -1,13 +1,13 @@
 import os
 
 import eventlet
+import redis as r
 from celery import Celery
 from flask import Flask
 from flask_admin import Admin
 from flask_migrate import Migrate
 from flask_socketio import SocketIO
 from flask_sqlalchemy import SQLAlchemy
-import redis as r
 
 eventlet.monkey_patch()
 

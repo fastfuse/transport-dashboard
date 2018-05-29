@@ -133,8 +133,8 @@ def to_minutes(seconds):
 if __name__ == '__main__':
     t = TransportAPIWrapper()
 
-    r = t.get_all_routes()
-    ss = t.get_all_stops()
+    # r = t.get_all_routes()
+    # ss = t.get_all_stops()
     # s = t.get_route_stops(713027)
     # m = t.monitor_route(713027)
     t.monitor_stop('0191')

@@ -26,15 +26,7 @@ admin.add_view(ModelView(models.Stop, db.session))
 admin.add_view(UserView(models.User, db.session))
 
 
-# ======================== Views
-
-
-@app.route('/')
-@login_required
-def test_index():
-    users = models.User.query.all()
-
-    return render_template('index2.html', users=users)
+# ================================= Login stuff
 
 
 @app.route('/register', methods=['GET', 'POST'])
@@ -50,7 +42,7 @@ def register():
         db.session.add(user)
         db.session.commit()
 
-        flash('Congratulations, you are now a registered user!')
+        flash('Successfully registered')
 
         return redirect(url_for('login'))
 
@@ -83,6 +75,16 @@ def login():
 def logout():
     logout_user()
     return redirect(url_for('test_index'))
+
+
+# ========================================================
+
+@app.route('/')
+@login_required
+def test_index():
+    users = models.User.query.all()
+
+    return render_template('index2.html', users=users)
 
 
 # @app.route('/')
@@ -183,6 +185,16 @@ def add_stop():
     db.session.commit()
 
     return jsonify(status='OK')
+
+
+@app.route('/monitor_stop/<stop_code>')
+def monitor_stop(stop_code):
+    """
+    Get info about certain stop.
+    """
+    stop_info = transport.monitor_stop(stop_code)
+
+    return render_template('stop_info.html', stop_info=stop_info)
 
 
 @app.route('/delete_stop', methods=['POST'])

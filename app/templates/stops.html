@@ -6,16 +6,19 @@
 
   {% if stops %}
 
+
+  {# {{ stops }} #}
+
     <h2 class="text-center text-info">Stops ({{ stops | count }})</h2>
 
-    <div class="input-group col-md-8 offset-md-2 col">
+    <div class="input-group col-md-6 offset-md-3 col">
       <input type="text" class="form-control" id="searchInput" placeholder="Search">
     </div>
 
     <br>
 
     <div class="row">
-      <div class="col-md-8 offset-md-2 col">
+      <div class="col-md-6 offset-md-3 col">
         <div class="table">
           <table class="table table-hover">
             <body id="fbody">
@@ -40,6 +43,9 @@
                 </td>
 
                 {# <td><button type="button" class="btn btn-info" disabled="">Show on map</button></td> #}
+
+                <td><a href="{{ url_for('monitor_stop', stop_code=stop.code) }}" class="btn btn-info">Info</a></td>
+
               </tr>
 
             {% endfor %}

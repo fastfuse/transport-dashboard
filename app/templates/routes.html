@@ -8,14 +8,14 @@
 
     <h2 class="text-center text-info">Routes ({{ routes | count }})</h2>
 
-    <div class="input-group col-md-8 offset-md-2 col">
+    <div class="input-group col-md-6 offset-md-3 col">
       <input type="text" class="form-control" id="searchInput" placeholder="Search">
     </div>
 
     <br>
 
     <div class="row">
-      <div class="col-md-8 offset-md-2 col">
+      <div class="col-md-6 offset-md-3 col">
         <div class="table">
           <table class="table table-hover">
             <tbody id="fbody">
@@ -37,14 +37,11 @@
       </div>
     </div>
 
-
     {% block extra_js %}
 
       <script src="/static/js/search.js"></script>
 
     {% endblock extra_js %}
-
-
 
 
   {% endif %}

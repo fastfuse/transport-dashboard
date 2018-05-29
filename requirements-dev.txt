@@ -10,3 +10,5 @@ requests
 gunicorn
 psycopg2
 honcho
+flask-wtf
+flask-login

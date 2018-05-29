@@ -6,9 +6,6 @@
 
   {% if stops %}
 
-
-  {# {{ stops }} #}
-
     <h2 class="text-center text-info">Stops ({{ stops | count }})</h2>
 
     <div class="input-group col-md-6 offset-md-3 col">
@@ -23,24 +20,23 @@
           <table class="table table-hover">
             <body id="fbody">
 
-              {% for id, stop in stops.items() %}
+              {% for _, stop in stops.items() %}
 
               <tr>
                 <td>
                   {{ stop.name }}
                 </td>
-{#                 <td>
-                  {{ stop.code }}
-                </td> #}
 
-                <td>
-                  <form class="add_stop">
-                    <input type="hidden" name="internal_id" value="{{ stop.internal_id }}">
-                    <input type="hidden" name="name" value="{{ stop.name }}">
-                    <input type="hidden" name="code" value="{{ stop.code }}">
-                    <button type="submit" {% if stop.code in user_stops %} class="btn btn-outline-primary btn-info add-btn" disabled title="Stop is already added" {% else %}class="btn btn-info add-btn"{% endif %}>Add</button>
-                  </form>
-                </td>
+                {% if current_user.is_authenticated %}
+                  <td>
+                    <form class="add_stop">
+                      <input type="hidden" name="internal_id" value="{{ stop.internal_id }}">
+                      <input type="hidden" name="name" value="{{ stop.name }}">
+                      <input type="hidden" name="code" value="{{ stop.code }}">
+                      <button type="submit" {% if stop.code in user_stops %} class="btn btn-outline-primary btn-info add-btn" disabled title="Stop is already added" {% else %}class="btn btn-info add-btn"{% endif %}>Add</button>
+                    </form>
+                  </td>
+                {% endif %}
 
                 {# <td><button type="button" class="btn btn-info" disabled="">Show on map</button></td> #}
 

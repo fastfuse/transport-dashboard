@@ -64,11 +64,11 @@ def login():
             return redirect(url_for('login'))
         # login_user(user, remember=form.remember_me.data)
         login_user(user)
-        next_page = request.args.get('next', url_for('index'))
+        next_page = request.args.get('next', url_for('test_index'))
 
         return redirect(next_page)
 
-    return render_template('login.html', title='Sign In', form=form)
+    return render_template('login.html', form=form)
 
 
 @app.route('/logout')
@@ -107,11 +107,18 @@ def index():
 
 @app.route('/stops')
 def show_all_stops():
-    if b'stops' in redis.keys():
-        stops = json.loads(redis.get('stops').decode())
-    else:
+    """
+    List all stops.
+    """
+    # TODO: add pagination
+
+    stops = redis.get('stops')
+
+    if not stops:
         stops = transport.get_all_stops()
         redis.set('stops', json.dumps(stops))
+    else:
+        stops = json.loads(stops.decode())
 
     user_stops = [stop.code for stop in models.Stop.query.all()]
 
@@ -123,6 +130,7 @@ def show_all_routes():
     """
     List all routes.
     """
+    # TODO: add pagination
 
     routes = redis.get('routes')
 
@@ -141,6 +149,8 @@ def show_route_stops(route_id):
     """
     List all stops on route.
     """
+    # TODO: add pagination
+
     cache_key = f'route_{route_id}'
 
     routes = redis.get('routes')
@@ -192,9 +202,12 @@ def monitor_stop(stop_code):
     """
     Get info about certain stop.
     """
+    # todo: check cache
+    stops = json.loads(redis.get('stops').decode())
+    stop = stops.get(stop_code)
     stop_info = transport.monitor_stop(stop_code)
 
-    return render_template('stop_info.html', stop_info=stop_info)
+    return render_template('stop_info.html', stop=stop, stop_info=stop_info)
 
 
 @app.route('/delete_stop', methods=['POST'])
@@ -257,3 +270,5 @@ def routes_api():
 # TODO
 # fix socket duplication problem; (dirty hack; make more elegant solution)
 # show on map: map w/ marker (modal);
+
+# check user.room stuff

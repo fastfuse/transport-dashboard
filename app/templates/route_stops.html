@@ -12,18 +12,23 @@
           <table class="table table-hover">
             <tbody id="fbody">
 
-            {% for id, stop in stops.items() %}
+            {% for _, stop in stops.items() %}
 
               <tr>
                 <td>{{ stop.name }}</td>
-                <td>
-                  <form class="add_stop">
-                    <input type="hidden" name="internal_id" value="{{ stop.internal_id }}">
-                    <input type="hidden" name="name" value="{{ stop.name }}">
-                    <input type="hidden" name="code" value="{{ stop.code }}">
-                    <button type="submit" {% if stop.code in user_stops %} class="btn btn-outline-primary btn-info add-btn" disabled title="Stop is already added" {% else %}class="btn btn-info add-btn"{% endif %}>Add</button>
-                  </form>
-                </td>
+
+                {% if current_user.is_authenticated %}
+                  <td>
+                    <form class="add_stop">
+                      <input type="hidden" name="internal_id" value="{{ stop.internal_id }}">
+                      <input type="hidden" name="name" value="{{ stop.name }}">
+                      <input type="hidden" name="code" value="{{ stop.code }}">
+                      <button type="submit" {% if stop.code in user_stops %} class="btn btn-outline-primary btn-info add-btn" disabled title="Stop is already added" {% else %}class="btn btn-info add-btn"{% endif %}>Add</button>
+                    </form>
+                  </td>
+                {% endif %}
+
+                <td><a href="{{ url_for('monitor_stop', stop_code=stop.code) }}" class="btn btn-info">Info</a></td>
 
                 {# <td><button type="button" class="btn btn-info" disabled="">Show on map</button></td> #}
               </tr>

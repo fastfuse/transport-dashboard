@@ -1,5 +1,4 @@
 import json
-import uuid
 
 from flask import request, jsonify, session, render_template, flash, redirect, \
     url_for
@@ -9,7 +8,7 @@ from flask_socketio import emit, join_room
 
 from app import app, models, db, admin, socketio, redis
 from app.forms import LoginForm, RegistrationForm
-from app.tasks import monitor_stop
+from app.tasks import get_stop_info
 from app.utils import TransportAPIWrapper
 
 # Lviv public transport API wrapper object
@@ -52,7 +51,7 @@ def register():
 @app.route('/login', methods=['GET', 'POST'])
 def login():
     if current_user.is_authenticated:
-        return redirect(url_for('test_index'))
+        return redirect(url_for('index'))
 
     form = LoginForm()
 
@@ -64,7 +63,11 @@ def login():
             return redirect(url_for('login'))
         # login_user(user, remember=form.remember_me.data)
         login_user(user)
-        next_page = request.args.get('next', url_for('test_index'))
+
+        # store user's personal room to session
+        session['user_room'] = user.room
+
+        next_page = request.args.get('next', url_for('index'))
 
         return redirect(next_page)
 
@@ -74,7 +77,7 @@ def login():
 @app.route('/logout')
 def logout():
     logout_user()
-    return redirect(url_for('test_index'))
+    return redirect(url_for('index'))
 
 
 # ========================================================
@@ -89,17 +92,16 @@ def test_index():
 
 # @app.route('/')
 @app.route('/dashboard')
+@login_required
 def index():
-    uid = str(uuid.uuid4())
-
-    session['uid'] = uid
+    room = session.get('user_room')
 
     stops_info = list()
 
     selected_stops = models.Stop.query.all()
 
     for stop in selected_stops:
-        monitor_stop.apply_async([stop.code, uid], countdown=1)
+        get_stop_info.apply_async([stop.code, room], countdown=1)
         stops_info.append(stop)
 
     return render_template('index.html', data=stops_info)
@@ -229,22 +231,11 @@ def delete_stop():
 
 @socketio.on('connect', namespace='/dashboard')
 def on_connect():
-    print('====================')
-    # print(request.sid)
-    print('====================')
-    # print(session.get('uid'))
-    print(session.keys())
-    print('==')
-    print(session['uid'])
+    room = session.get('user_room')
 
-    join_room(session['uid'])
-    # s = session.get('uid', 'kek')
     # join room
-    # users.append(request.sid)
-    # emit('connection_update', {'msg': 'kekekekekek'})
-    emit('connection_update', {'msg': 'Server ACK', 'sid': session.get('uid')})
-    # emit('connection_update', {'msg': 'Server ACK', 's': s})
-    # room=request.sid)
+    join_room(room)
+    emit('connection_update', {'msg': 'Server ACK', 'sid': room})
 
 
 @socketio.on('my_event', namespace='/dashboard')

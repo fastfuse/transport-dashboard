@@ -11,11 +11,10 @@ transport = TransportAPIWrapper()
 
 
 @celery.task
-def monitor_stop(stop_code, room):
+def get_stop_info(stop_code, room):
     """
     Get stop monitoring data. When ready - send data to UI through socket.
     """
-    # TODO: rename
 
     info = transport.monitor_stop(stop_code)
 
@@ -25,9 +24,7 @@ def monitor_stop(stop_code, room):
         'room': room
     }
 
-    # emit to user.uuid (room)
-    # room = session.get('uid')
-    # socketio.emit('update', data, namespace='/dashboard', room=room)
-    socketio.emit('update', data, namespace='/dashboard')
+    # emit to user's personal room (user.room)
+    socketio.emit('update', data, namespace='/dashboard', room=room)
 
     return True

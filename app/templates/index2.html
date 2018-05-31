@@ -6,5 +6,10 @@
 
 {{ users }}
 
+{% for user in users %}
+    <p>{{ user.username }}</p>
+    <p>{{ user.room }}</p>
+{% endfor %}
+
 {% endblock content %}
 

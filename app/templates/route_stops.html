@@ -23,6 +23,8 @@
                       <input type="hidden" name="internal_id" value="{{ stop.internal_id }}">
                       <input type="hidden" name="name" value="{{ stop.name }}">
                       <input type="hidden" name="code" value="{{ stop.code }}">
+                      <input type="hidden" name="lat" value="{{ stop.location[0] }}">
+                      <input type="hidden" name="lng" value="{{ stop.location[1] }}">
                       <button type="submit" {% if stop.code in user_stops %} class="btn btn-outline-primary btn-info add-btn" disabled title="Stop is already added" {% else %}class="btn btn-info add-btn"{% endif %}>Add</button>
                     </form>
                   </td>

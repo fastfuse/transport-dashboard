@@ -1,7 +1,6 @@
 """
 Celery tasks
 """
-from flask import session
 
 from app import celery, socketio
 from app.utils import TransportAPIWrapper

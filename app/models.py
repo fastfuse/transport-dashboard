@@ -1,9 +1,18 @@
 import uuid
 
+from flask_login import UserMixin
 from werkzeug.security import generate_password_hash, check_password_hash
 
 from app import db, login
-from flask_login import UserMixin
+
+user_stops = db.Table('user_stops',
+                      db.Column('user_id', db.Integer,
+                                db.ForeignKey('users.id'),
+                                primary_key=True),
+                      db.Column('stop_id', db.Integer,
+                                db.ForeignKey('stops.id'),
+                                primary_key=True)
+                      )
 
 
 class Stop(db.Model):
@@ -17,16 +26,15 @@ class Stop(db.Model):
     internal_id = db.Column('internal_id', db.String)
     name = db.Column('name', db.Unicode)
     code = db.Column('code', db.String)
-
-    # location = db.Column('location', db.String)
-
-    def __init__(self, internal_id, name, code):
-        self.internal_id = internal_id
-        self.name = name
-        self.code = code
+    latitude = db.Column('latitude', db.Float)
+    longitude = db.Column('longitude', db.Float)
 
 
 class User(db.Model, UserMixin):
+    """
+    Model represents User instance.
+    """
+
     __tablename__ = 'users'
 
     id = db.Column(db.Integer, primary_key=True)
@@ -34,9 +42,10 @@ class User(db.Model, UserMixin):
     password_hash = db.Column('password', db.String)
     room = db.Column('room', db.String, default=uuid.uuid4)
 
-    # def __init__(self, username, password):
-    #     self.username = username
-    #     self.password_hash = password
+    is_admin = db.Column('admin', db.Boolean, default=False)
+
+    stops = db.relationship('Stop', secondary=user_stops, lazy='subquery',
+                            backref=db.backref('users', lazy=True))
 
     def set_password(self, password):
         self.password_hash = generate_password_hash(password)

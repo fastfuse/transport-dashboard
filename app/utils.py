@@ -64,7 +64,7 @@ class TransportAPIWrapper:
             location = (stop.get('Y'), stop.get('X'))
 
             stops.update({code: {'internal_id': id_, 'name': name,
-                                'code': code, 'location': location}})
+                                 'code': code, 'location': location}})
         return stops
 
     def get_all_stops(self):
@@ -132,9 +132,3 @@ def to_minutes(seconds):
 
 if __name__ == '__main__':
     t = TransportAPIWrapper()
-
-    # r = t.get_all_routes()
-    ss = t.get_all_stops()
-    # s = t.get_route_stops(713027)
-    # m = t.monitor_route(713027)
-    t.monitor_stop('0191')

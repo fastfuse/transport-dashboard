@@ -3,7 +3,7 @@ import json
 from flask import request, jsonify, session, render_template, flash, redirect, \
     url_for
 from flask_admin.contrib.sqla import ModelView
-from flask_login import current_user, login_user, logout_user, login_required
+from flask_login import current_user, login_user, logout_user
 from flask_socketio import emit, join_room
 
 from app import app, models, db, admin, socketio, redis
@@ -15,14 +15,17 @@ from app.utils import TransportAPIWrapper
 transport = TransportAPIWrapper()
 
 
-# ======================== Admin page
+# ================================= Admin page
 
-class UserView(ModelView):
+class SecureModelView(ModelView):
     column_exclude_list = ['password_hash', ]
 
+    def is_accessible(self):
+        return current_user.is_authenticated and current_user.is_admin
 
-admin.add_view(ModelView(models.Stop, db.session))
-admin.add_view(UserView(models.User, db.session))
+
+admin.add_view(SecureModelView(models.Stop, db.session))
+admin.add_view(SecureModelView(models.User, db.session))
 
 
 # ================================= Login stuff
@@ -65,7 +68,7 @@ def login():
         login_user(user)
 
         # store user's personal room to session
-        session['user_room'] = user.room
+        session['personal_room'] = user.room
 
         next_page = request.args.get('next', url_for('index'))
 
@@ -83,25 +86,17 @@ def logout():
 # ========================================================
 
 @app.route('/')
-@login_required
-def test_index():
-    users = models.User.query.all()
-
-    return render_template('index2.html', users=users)
-
-
-# @app.route('/')
 @app.route('/dashboard')
-@login_required
 def index():
-    room = session.get('user_room')
+    if not current_user.is_authenticated:
+        return render_template('index.html')
 
+    personal_room = session.get('personal_room')
     stops_info = list()
-
-    selected_stops = models.Stop.query.all()
+    selected_stops = current_user.stops
 
     for stop in selected_stops:
-        get_stop_info.apply_async([stop.code, room], countdown=1)
+        get_stop_info.apply_async([stop.code, personal_room], countdown=1)
         stops_info.append(stop)
 
     return render_template('index.html', data=stops_info)
@@ -122,7 +117,10 @@ def show_all_stops():
     else:
         stops = json.loads(stops.decode())
 
-    user_stops = [stop.code for stop in models.Stop.query.all()]
+    if current_user.is_authenticated:
+        user_stops = [stop.code for stop in current_user.stops]
+    else:
+        user_stops = list()
 
     return render_template('stops.html', stops=stops, user_stops=user_stops)
 
@@ -183,19 +181,30 @@ def show_route_stops(route_id):
 def show_route_map(route_id):
     """
     Display route on map.
+    TDB.
     """
     pass
 
 
 @app.route('/add_stop', methods=["POST"])
 def add_stop():
-    stop = models.Stop(internal_id=request.form['internal_id'],
-                       name=request.form['name'],
-                       code=request.form['code'])
+    stop = models.Stop.query.filter_by(
+        internal_id=request.form['internal_id']).first()
 
-    db.session.add(stop)
+    if not stop:
+        stop = models.Stop(internal_id=request.form['internal_id'],
+                           name=request.form['name'],
+                           code=request.form['code'],
+                           latitude=request.form['lat'],
+                           longitude=request.form['lng']
+                           )
+
+    current_user.stops.append(stop)
+
+    db.session.add(current_user)
     db.session.commit()
 
+    # TODO: display success on UI somehow
     return jsonify(status='OK')
 
 
@@ -204,8 +213,14 @@ def monitor_stop(stop_code):
     """
     Get info about certain stop.
     """
-    # todo: check cache
-    stops = json.loads(redis.get('stops').decode())
+    stops = redis.get('stops')
+
+    if not stops:
+        stops = transport.get_all_stops()
+        redis.set('stops', json.dumps(stops))
+    else:
+        stops = json.loads(stops.decode())
+
     stop = stops.get(stop_code)
     stop_info = transport.monitor_stop(stop_code)
 
@@ -215,13 +230,13 @@ def monitor_stop(stop_code):
 @app.route('/delete_stop', methods=['POST'])
 def delete_stop():
     """
-    Delete stop from db.
+    Delete stop from user's stops.
     """
     stop_code = request.form.get('stop_code')
-
     stop = models.Stop.query.filter_by(code=stop_code).first()
+    current_user.stops.remove(stop)
 
-    db.session.delete(stop)
+    db.session.add(current_user)
     db.session.commit()
 
     return jsonify(status='OK')
@@ -231,9 +246,9 @@ def delete_stop():
 
 @socketio.on('connect', namespace='/dashboard')
 def on_connect():
-    room = session.get('user_room')
+    room = session.get('personal_room')
 
-    # join room
+    # join personal room
     join_room(room)
     emit('connection_update', {'msg': 'Server ACK', 'sid': room})
 
@@ -259,7 +274,4 @@ def routes_api():
 # =======================
 
 # TODO
-# fix socket duplication problem; (dirty hack; make more elegant solution)
 # show on map: map w/ marker (modal);
-
-# check user.room stuff

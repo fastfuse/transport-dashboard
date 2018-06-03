@@ -28,16 +28,6 @@
 
       {% endfor %}
 
-      {% else %}
-
-        <div class="col">
-          <h2 class="text-center text-info">There are no stops in your dashboard</h2>
-        </div>
-
-    {% endif %}
-
-    {% block extra_js %}
-
       <script>
 
         $(document).ready(function(){
@@ -71,16 +61,12 @@
             });
         });
 
-      </script>
-
-      <script>
-
-        $('.close').on('click',function() {
-          $(this).closest('.card').fadeOut();
-        })
+        $('.delete_stop').on('submit', deleteStop);
 
         function deleteStop(ev) {
           ev.preventDefault();
+          $(this).closest('.card').fadeOut();
+
           $.ajax({
             method: 'POST',
             url: {{ url_for('delete_stop')|tojson }},
@@ -88,12 +74,15 @@
           })
         };
 
-        $('.delete_stop').on('submit', deleteStop);
-      
       </script>
 
-    {% endblock extra_js %}
+    {% else %}
 
+      <div class="col">
+        <h2 class="text-center text-info">There are no stops in your dashboard</h2>
+      </div>
+
+    {% endif %}
 
   {% else %}
 
@@ -105,10 +94,8 @@
         <h4>To get info about certain route or stop - use <a href="{{ url_for('show_all_routes') }}">Routes</a> or <a href="{{ url_for('show_all_stops') }}">Stops</a>.</h4>
       </div>
     </div>
-    
 
   {% endif %}
-
 
 {% endblock content %}
 

@@ -171,7 +171,7 @@ def show_route_stops(route_id):
         # store to cache
         redis.set(cache_key, json.dumps(route_stops))
 
-    user_stops = [stop.code for stop in models.Stop.query.all()]
+    user_stops = [stop.code for stop in current_user.stops]
 
     return render_template('route_stops.html', route=route, stops=route_stops,
                            user_stops=user_stops)
@@ -234,6 +234,7 @@ def delete_stop():
     """
     stop_code = request.form.get('stop_code')
     stop = models.Stop.query.filter_by(code=stop_code).first()
+
     current_user.stops.remove(stop)
 
     db.session.add(current_user)

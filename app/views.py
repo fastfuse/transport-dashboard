@@ -171,7 +171,10 @@ def show_route_stops(route_id):
         # store to cache
         redis.set(cache_key, json.dumps(route_stops))
 
-    user_stops = [stop.code for stop in current_user.stops]
+    if current_user.is_authenticated:
+        user_stops = [stop.code for stop in current_user.stops]
+    else:
+        user_stops = list()
 
     return render_template('route_stops.html', route=route, stops=route_stops,
                            user_stops=user_stops)

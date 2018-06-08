@@ -25,12 +25,12 @@
                       <input type="hidden" name="code" value="{{ stop.code }}">
                       <input type="hidden" name="lat" value="{{ stop.location[0] }}">
                       <input type="hidden" name="lng" value="{{ stop.location[1] }}">
-                      <button type="submit" {% if stop.code in user_stops %} class="btn btn-outline-primary btn-info add-btn" disabled title="Stop is already added" {% else %}class="btn btn-info add-btn"{% endif %}>Add</button>
+                      <button type="submit" {% if stop.code in user_stops %} class="btn btn-outline-primary btn-success add-btn" disabled title="Stop is already added" {% else %}class="btn btn-primary add-btn"{% endif %}>Add</button>
                     </form>
                   </td>
                 {% endif %}
 
-                <td><a href="{{ url_for('monitor_stop', stop_code=stop.code) }}" class="btn btn-info">Info</a></td>
+                <td><a href="{{ url_for('monitor_stop', stop_code=stop.code) }}" class="btn btn-primary">Info</a></td>
 
                 {# <td><button type="button" class="btn btn-info" disabled="">Show on map</button></td> #}
               </tr>
@@ -49,18 +49,20 @@
 
   <script>
 
-    function addStop(ev) {
-      ev.preventDefault();
+      function addStop(ev) {
+        ev.preventDefault();
 
-      $.ajax({
-        method: 'POST',
-        url: {{ url_for('add_stop')|tojson }},
-        data: $(this).serialize()
-      });
+        var f = $(this);
 
-      $(this).children('button[type=submit]').prop('disabled', true).addClass('btn-outline-primary');
-
-    };
+        $.ajax({
+          method: 'POST',
+          url: {{ url_for('add_stop')|tojson }},
+          data: $(this).serialize(),
+          success: function(){
+            f.children('button').prop('disabled', true).removeClass('btn-primary').addClass('btn-outline-primary btn-success');
+          }
+        });
+      };
 
     $('.add_stop').on('submit', addStop);
 

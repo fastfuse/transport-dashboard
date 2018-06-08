@@ -64,10 +64,10 @@ def login():
         if user is None or not user.check_password(form.password.data):
             flash('Invalid username or password')
             return redirect(url_for('login'))
-        # login_user(user, remember=form.remember_me.data)
-        login_user(user)
 
-        # store user's personal room to session
+        login_user(user, remember=form.remember_me.data)
+
+        # store user's personal room in session
         session['personal_room'] = user.room
 
         next_page = request.args.get('next', url_for('index'))
@@ -208,7 +208,7 @@ def add_stop():
     db.session.commit()
 
     # TODO: display success on UI somehow
-    return jsonify(status='OK')
+    return 'success', 201
 
 
 @app.route('/monitor_stop/<stop_code>')
@@ -278,4 +278,5 @@ def routes_api():
 # =======================
 
 # TODO
-# show on map: map w/ marker (modal);
+# * refactor w/ blueprints;
+# * show on map: map w/ marker (modal);

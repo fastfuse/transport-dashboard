@@ -1,9 +1,9 @@
 {% extends "base.html" %}
 
 {% block content %}
-  
+
   {% if current_user.is_authenticated %}
-    
+
     {% if data %}
 
       {% for stop in data %}
@@ -71,7 +71,7 @@
             method: 'POST',
             url: {{ url_for('delete_stop')|tojson }},
             data: $(this).serialize()
-          })
+          });
         };
 
       </script>

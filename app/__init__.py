@@ -41,14 +41,12 @@ from app import models
 from .admin import admin_blueprint
 from .auth import auth_blueprint
 from .dashboard import dashboard_blueprint
-
-# TODO: add API
-# from .api import api_blueprint
+from .api import api_blueprint
 
 app.register_blueprint(admin_blueprint)
 app.register_blueprint(auth_blueprint)
 app.register_blueprint(dashboard_blueprint)
-# app.register_blueprint(api_blueprint)
+app.register_blueprint(api_blueprint)
 
 if __name__ == '__main__':
     socketio.run(app)

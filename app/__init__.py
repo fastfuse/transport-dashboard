@@ -48,7 +48,7 @@ from .dashboard import dashboard_blueprint
 app.register_blueprint(admin_blueprint)
 app.register_blueprint(auth_blueprint)
 app.register_blueprint(dashboard_blueprint)
-app.register_blueprint(api_blueprint)
+# app.register_blueprint(api_blueprint)
 
 if __name__ == '__main__':
     socketio.run(app)

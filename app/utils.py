@@ -9,7 +9,7 @@ import requests
 
 from paho.mqtt.client import Client
 
-import paho.mqtt.publish as publish
+# import paho.mqtt.publish as publish
 
 from app import app
 

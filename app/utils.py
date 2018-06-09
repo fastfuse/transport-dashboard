@@ -7,7 +7,7 @@ from time import sleep
 
 import requests
 
-from paho.mqtt.client import Client
+# from paho.mqtt.client import Client
 
 # import paho.mqtt.publish as publish
 
@@ -183,27 +183,27 @@ if __name__ == '__main__':
 
     t = TransportAPIWrapper()
 
-    mqtt_client = Client()
-    mqtt_client.on_connect = on_connect_pub
-    mqtt_client.on_publish = on_publish
-    mqtt_client.on_log = on_log
-    mqtt_client.on_disconnect = on_disconnect
-
-    mqtt_client.connect("broker.hivemq.com")
-    mqtt_client.loop_start()  # start the loop
-
-    rc = 0
-
-    while rc == 0:
-        print('start...')
-        routes = t.get_all_routes()
-
-        rc, mid = mqtt_client.publish(topic="transport/test",
-                                      payload=json.dumps(routes))
-
-        print(rc, mid)
-        print('sleep...')
-        sleep(5)
+    # mqtt_client = Client()
+    # mqtt_client.on_connect = on_connect_pub
+    # mqtt_client.on_publish = on_publish
+    # mqtt_client.on_log = on_log
+    # mqtt_client.on_disconnect = on_disconnect
+    #
+    # mqtt_client.connect("broker.hivemq.com")
+    # mqtt_client.loop_start()  # start the loop
+    #
+    # rc = 0
+    #
+    # while rc == 0:
+    #     print('start...')
+    #     routes = t.get_all_routes()
+    #
+    #     rc, mid = mqtt_client.publish(topic="transport/test",
+    #                                   payload=json.dumps(routes))
+    #
+    #     print(rc, mid)
+    #     print('sleep...')
+    #     sleep(5)
 
 
 # ==== client

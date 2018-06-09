@@ -1,5 +1,5 @@
 """
-Celery tasks
+Celery tasks.
 """
 
 from app import celery, socketio

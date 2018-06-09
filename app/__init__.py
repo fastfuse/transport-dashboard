@@ -13,26 +13,40 @@ from flask_sqlalchemy import SQLAlchemy
 eventlet.monkey_patch()
 
 app = Flask(__name__)
+app.config.from_object(os.environ['APP_SETTINGS'])
 
+# Login
 login = LoginManager(app)
 login.login_view = 'login'
 
+# Admin
 admin = Admin(app)
 
-app.config.from_object(os.environ['APP_SETTINGS'])
-
+# Database
 db = SQLAlchemy(app)
 migrate = Migrate(app, db)
 
+# SocketIO
 socketio = SocketIO(app, message_queue=app.config['CELERY_BROKER_URL'])
 
+# Celery
 celery = Celery(app.name, broker=app.config['CELERY_BROKER_URL'])
 celery.conf.update(app.config)
 
+# Redis
 redis = r.from_url(app.config['REDIS_URL'])
 
-from app import views
 from app import models
+
+from .admin import admin_blueprint
+from .auth import auth_blueprint
+from .dashboard import dashboard_blueprint
+from .api import api_blueprint
+
+app.register_blueprint(admin_blueprint)
+app.register_blueprint(auth_blueprint)
+app.register_blueprint(dashboard_blueprint)
+app.register_blueprint(api_blueprint)
 
 if __name__ == '__main__':
     socketio.run(app)

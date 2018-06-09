@@ -25,12 +25,22 @@
                       <input type="hidden" name="code" value="{{ stop.code }}">
                       <input type="hidden" name="lat" value="{{ stop.location[0] }}">
                       <input type="hidden" name="lng" value="{{ stop.location[1] }}">
-                      <button type="submit" {% if stop.code in user_stops %} class="btn btn-outline-primary btn-info add-btn" disabled title="Stop is already added" {% else %}class="btn btn-info add-btn"{% endif %}>Add</button>
+
+                      {% if stop.code in user_stops %}
+                        <button class="btn  btn-block btn-outline-success btn-success add-btn" disabled title="Stop is already added">
+                          <i class="fa fa-check fa-lg"></i>
+                        </button>
+                      {% else %}
+                        <button class="btn  btn-block btn-primary add-btn" type="submit">
+                          Add
+                        </button>
+                      {% endif %}
+
                     </form>
                   </td>
                 {% endif %}
 
-                <td><a href="{{ url_for('monitor_stop', stop_code=stop.code) }}" class="btn btn-info">Info</a></td>
+                <td><a href="{{ url_for('monitor_stop', stop_code=stop.code) }}" class="btn btn-primary btn-block">Info</a></td>
 
                 {# <td><button type="button" class="btn btn-info" disabled="">Show on map</button></td> #}
               </tr>
@@ -49,18 +59,17 @@
 
   <script>
 
-    function addStop(ev) {
-      ev.preventDefault();
+      function addStop(ev) {
+        ev.preventDefault();
 
-      $.ajax({
-        method: 'POST',
-        url: {{ url_for('add_stop')|tojson }},
-        data: $(this).serialize()
-      });
+        $.ajax({
+          method: 'POST',
+          url: {{ url_for('add_stop')|tojson }},
+          data: $(this).serialize()
+        });
 
-      $(this).children('button[type=submit]').prop('disabled', true).addClass('btn-outline-primary');
-
-    };
+        $(this).children('button').prop('disabled', true).removeClass('btn-primary').addClass('btn-outline-success').html('<i class="fa fa-check fa-lg"></i>');
+      };
 
     $('.add_stop').on('submit', addStop);
 

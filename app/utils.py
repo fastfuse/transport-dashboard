@@ -1,5 +1,5 @@
 """
-Utility functions
+Utility functions.
 """
 
 import json
@@ -11,7 +11,7 @@ from paho.mqtt.client import Client
 
 import paho.mqtt.publish as publish
 
-# from app import app
+from app import app
 
 BASE_URL = 'http://82.207.107.126:13541/SimpleRide/LAD/SM.WebApi/api'
 ALL_ROUTES = BASE_URL + '/CompositeRoute'
@@ -127,8 +127,11 @@ class TransportAPIWrapper:
 
 # ===================== Custom Jinja template filters
 
-# @app.template_filter()
+@app.template_filter()
 def to_minutes(seconds):
+    """
+    Convert seconds to minutes.
+    """
     return round(seconds / 60)
 
 

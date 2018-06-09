@@ -19,6 +19,8 @@
   <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/js/bootstrap.min.js" integrity="sha384-JZR6Spejh4U02d8jOt6vLEHfe/JQGiRRSQQxSfFWpi1MquVdAyjUar5+76PVCmYl" crossorigin="anonymous"></script>
   <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/socket.io/2.0.4/socket.io.js"></script>
 
+  <script type="text/javascript" src="/static/js/ptr.js"></script>
+
 </head>
 
 
@@ -88,6 +90,10 @@
               <a class="nav-link dropdown-toggle" data-toggle="dropdown" href="#" aria-expanded="false">Logged in as: {{ current_user.username }}</a>
               <div class="dropdown-menu">
                 <a class="dropdown-item" href="{{ url_for('logout') }}">Logout</a>
+                {% if current_user.is_admin %}
+                  <div class="dropdown-divider"></div>
+                  <a class="dropdown-item" href="{{ url_for('admin.index') }}">Admin page</a>
+                {% endif %}
               </div>
 
             </li>
@@ -118,7 +124,7 @@
             {% endfor %}
           {% endif %}
         {% endwith %}
-      </div> 
+      </div>
     </div>
 
     <div class="row">
@@ -128,6 +134,13 @@
   </div>
 
 {% block extra_js %}{% endblock extra_js %}
+
+<script>
+  var ptr = PullToRefresh.init({
+    mainElement: 'body',
+    onRefresh: function(){ window.location.reload(); }
+  });
+</script>
 
 </body>
 </html>

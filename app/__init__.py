@@ -41,7 +41,9 @@ from app import models
 from .admin import admin_blueprint
 from .auth import auth_blueprint
 from .dashboard import dashboard_blueprint
-from .api import api_blueprint
+
+# TODO: add API
+# from .api import api_blueprint
 
 app.register_blueprint(admin_blueprint)
 app.register_blueprint(auth_blueprint)

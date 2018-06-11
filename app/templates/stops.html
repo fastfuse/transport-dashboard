@@ -75,14 +75,15 @@
 
       function addStop(ev) {
         ev.preventDefault();
-
+        var f = $(this);
         $.ajax({
           method: 'POST',
           url: {{ url_for('add_stop')|tojson }},
-          data: $(this).serialize()
+          data: $(this).serialize(),
+          success: function(){
+            f.children('button').prop('disabled', true).removeClass('btn-primary').addClass('btn-outline-success').html('<i class="fa fa-check fa-lg"></i>');
+          }
         });
-
-        $(this).children('button').prop('disabled', true).removeClass('btn-primary').addClass('btn-outline-success').html('<i class="fa fa-check fa-lg"></i>');
       };
 
       $('.add_stop').on('submit', addStop);

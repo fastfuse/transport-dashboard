@@ -138,7 +138,6 @@ def add_stop():
     db.session.add(current_user)
     db.session.commit()
 
-    # TODO: display success on UI somehow
     return jsonify(status='OK')
 
 
@@ -175,6 +174,12 @@ def delete_stop():
     db.session.commit()
 
     return jsonify(status='OK')
+
+
+@app.route('/test')
+def test():
+    return render_template('test.html')
+
 
 
 # ============ socketio ACK

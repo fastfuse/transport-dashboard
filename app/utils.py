@@ -6,7 +6,6 @@ import json
 from time import sleep
 
 import requests
-
 from paho.mqtt.client import Client
 
 # import paho.mqtt.publish as publish
@@ -125,9 +124,9 @@ class TransportAPIWrapper:
         return stop_data
 
 
-# ===================== Custom Jinja template filters
+# ============= Custom Jinja template filters.
 
-# @app.template_filter()
+@app.template_filter()
 def to_minutes(seconds):
     """
     Convert seconds to minutes.
@@ -163,7 +162,14 @@ def on_publish(client, userdata, mid):
 # The callback for when a PUBLISH message is received from the server.
 def on_message(client, userdata, msg):
     print(f'Received message from topic: {msg.topic}')
-    print(str(msg.payload))
+
+
+    data = json.loads(msg.payload)
+    print(len(data))
+    for i in data:
+        print(i)
+
+    # print(str(msg.payload))
 
 
 def on_disconnect(client, userdata, rc):
@@ -175,7 +181,6 @@ def on_disconnect(client, userdata, rc):
 
 def on_log(client, userdata, level, buf):
     print(f"=== Log: {buf}")
-
 
 # ======================
 
@@ -207,16 +212,16 @@ if __name__ == '__main__':
 
 
 # ==== client
-    # client = Client()
-    # client.on_connect = on_connect_sub
-    # client.on_message = on_message
-    # client.on_subscribe = on_subscribe
-    # client.on_log = on_log
-    #
-    # client.connect("broker.hivemq.com")
-    #
-    # # Blocking call that processes network traffic, dispatches callbacks and
-    # # handles reconnecting.
-    # # Other loop*() functions are available that give a threaded interface and a
-    # # manual interface.
-    # client.loop_forever()
+# client = Client()
+# client.on_connect = on_connect_sub
+# client.on_message = on_message
+# client.on_subscribe = on_subscribe
+# client.on_log = on_log
+#
+# client.connect("broker.hivemq.com")
+#
+# # Blocking call that processes network traffic, dispatches callbacks and
+# # handles reconnecting.
+# # Other loop*() functions are available that give a threaded interface and a
+# # manual interface.
+# client.loop_forever()

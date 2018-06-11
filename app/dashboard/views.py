@@ -16,6 +16,79 @@ from app.utils import TransportAPIWrapper
 transport = TransportAPIWrapper()
 
 
+<<<<<<< HEAD:app/dashboard/views.py
+=======
+# ================================= Admin page
+
+class SecureModelView(ModelView):
+    column_exclude_list = ['password_hash', ]
+
+    def is_accessible(self):
+        return current_user.is_authenticated and current_user.is_admin
+
+
+admin.add_view(SecureModelView(models.Stop, db.session))
+admin.add_view(SecureModelView(models.User, db.session))
+
+
+# ================================= Login stuff
+
+
+@app.route('/register', methods=['GET', 'POST'])
+def register():
+    if current_user.is_authenticated:
+        return redirect(url_for('index'))
+
+    form = RegistrationForm()
+    if form.validate_on_submit():
+        user = models.User(username=form.username.data)
+        user.set_password(form.password.data)
+
+        db.session.add(user)
+        db.session.commit()
+
+        flash('Successfully registered')
+
+        return redirect(url_for('login'))
+
+    return render_template('register.html', form=form)
+
+
+@app.route('/login', methods=['GET', 'POST'])
+def login():
+    if current_user.is_authenticated:
+        return redirect(url_for('index'))
+
+    form = LoginForm()
+
+    if form.validate_on_submit():
+        user = models.User.query.filter_by(username=form.username.data).first()
+
+        if user is None or not user.check_password(form.password.data):
+            flash('Invalid username or password')
+            return redirect(url_for('login'))
+
+        login_user(user, remember=form.remember_me.data)
+
+        # store user's personal room in session
+        session['personal_room'] = user.room
+
+        next_page = request.args.get('next', url_for('index'))
+
+        return redirect(next_page)
+
+    return render_template('login.html', form=form)
+
+
+@app.route('/logout')
+def logout():
+    logout_user()
+    return redirect(url_for('index'))
+
+
+# ========================================================
+
+>>>>>>> 4698c9df6331c24989ad124342dc0fcd000ce82e:app/views.py
 @app.route('/')
 @app.route('/dashboard')
 def index():
@@ -138,7 +211,12 @@ def add_stop():
     db.session.add(current_user)
     db.session.commit()
 
+<<<<<<< HEAD:app/dashboard/views.py
     return jsonify(status='OK')
+=======
+    # TODO: display success on UI somehow
+    return 'success', 201
+>>>>>>> 4698c9df6331c24989ad124342dc0fcd000ce82e:app/views.py
 
 
 @app.route('/monitor_stop/<stop_code>')
@@ -196,3 +274,26 @@ def on_connect():
 @socketio.on('my_event', namespace='/dashboard')
 def on_message(message):
     emit('connection_update', {'msg': message['msg']})
+<<<<<<< HEAD:app/dashboard/views.py
+=======
+
+
+# =============== dev purposes
+
+@app.route('/api/stops')
+def stops_api():
+    stops = transport.get_all_stops()
+    return jsonify(count=len(stops), stops=stops)
+
+
+@app.route('/api/routes')
+def routes_api():
+    routes = transport.get_all_routes()
+    return jsonify(count=len(routes), routes=routes)
+
+# =======================
+
+# TODO
+# * refactor w/ blueprints;
+# * show on map: map w/ marker (modal);
+>>>>>>> 4698c9df6331c24989ad124342dc0fcd000ce82e:app/views.py

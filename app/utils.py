@@ -10,7 +10,7 @@ from paho.mqtt.client import Client
 
 # import paho.mqtt.publish as publish
 
-# from . import app
+from . import app
 
 BASE_URL = 'http://82.207.107.126:13541/SimpleRide/LAD/SM.WebApi/api'
 ALL_ROUTES = BASE_URL + '/CompositeRoute'

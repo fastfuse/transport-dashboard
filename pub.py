@@ -29,7 +29,8 @@ if __name__ == '__main__':
         for code in stops_codes:
             info = t.monitor_stop(code)
 
-            rc, mid = mqtt_client.publish(topic=f"transport/stop/{code}",
+            # rc, mid = mqtt_client.publish(topic=f"transport/stop/{code}",
+            rc, mid = mqtt_client.publish(topic=f"transport/test",
                                           payload=json.dumps(info))
 
             print(rc, mid)

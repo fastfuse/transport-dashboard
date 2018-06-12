@@ -6,8 +6,9 @@ import json
 
 from flask import request, jsonify, session, render_template
 from flask_login import current_user
+from flask_socketio import join_room, emit
 
-from app import app, models, db, redis
+from app import app, models, db, redis, socketio
 from app.tasks import get_stop_info
 from app.utils import TransportAPIWrapper
 
@@ -174,6 +175,27 @@ def delete_stop():
 
     return jsonify(status='OK')
 
+
+# ======================= socketio stuff
+
+@socketio.on('connect', namespace='/dashboard')
+def on_connect():
+    """
+    Function to join user to his personal room.
+    """
+    room = session.get('personal_room')
+
+    # join personal room
+    join_room(room)
+    emit('connection_update', {'msg': 'Server ACK', 'sid': room})
+
+
+@socketio.on('my_event', namespace='/dashboard')
+def on_message(message):
+    emit('connection_update', {'msg': message['msg']})
+
+
+# ==================================
 
 @app.route('/test')
 def test():

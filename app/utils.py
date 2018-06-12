@@ -3,12 +3,8 @@ Utility functions.
 """
 
 import json
-from time import sleep
 
 import requests
-from paho.mqtt.client import Client
-
-# import paho.mqtt.publish as publish
 
 from . import app
 
@@ -163,13 +159,12 @@ def on_publish(client, userdata, mid):
 def on_message(client, userdata, msg):
     print(f'Received message from topic: {msg.topic}')
 
-
     data = json.loads(msg.payload)
     print(len(data))
     for i in data:
         print(i)
 
-    # print(str(msg.payload))
+        # print(str(msg.payload))
 
 
 def on_disconnect(client, userdata, rc):
@@ -182,46 +177,8 @@ def on_disconnect(client, userdata, rc):
 def on_log(client, userdata, level, buf):
     print(f"=== Log: {buf}")
 
+
 # ======================
 
 if __name__ == '__main__':
-
-    # t = TransportAPIWrapper()
-
-    mqtt_client = Client()
-    mqtt_client.on_connect = on_connect_pub
-    mqtt_client.on_publish = on_publish
-    mqtt_client.on_log = on_log
-    mqtt_client.on_disconnect = on_disconnect
-
-    mqtt_client.connect("broker.hivemq.com")
-    mqtt_client.loop_start()  # start the loop
-
-    rc = 0
-
-    while rc == 0:
-        print('start...')
-        # routes = t.get_all_routes()
-
-        rc, mid = mqtt_client.publish(topic="transport/test",
-                                      payload='json.dumps(routes)')
-
-        print(rc, mid)
-        print('sleep...')
-        sleep(5)
-
-
-# ==== client
-# client = Client()
-# client.on_connect = on_connect_sub
-# client.on_message = on_message
-# client.on_subscribe = on_subscribe
-# client.on_log = on_log
-#
-# client.connect("broker.hivemq.com")
-#
-# # Blocking call that processes network traffic, dispatches callbacks and
-# # handles reconnecting.
-# # Other loop*() functions are available that give a threaded interface and a
-# # manual interface.
-# client.loop_forever()
+    t = TransportAPIWrapper()

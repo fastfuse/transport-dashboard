@@ -15,7 +15,7 @@
                 <input type="hidden" name="stop_code" value="{{ stop.code }}">
                 <button type="submit" class="close">&times;</button>
               </form>
-              <h4>Stop: {{ stop.name }}</h4>
+              <h4><a href="{{ url_for('monitor_stop', stop_code=stop.code) }}">{{ stop.name }}</a></h4>
             </div>
 
             <div class="card-body" id="{{ stop.code }}">

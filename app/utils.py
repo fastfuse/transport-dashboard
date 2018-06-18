@@ -3,6 +3,7 @@ Utility functions.
 """
 
 import json
+import math
 
 import requests
 
@@ -127,7 +128,7 @@ def to_minutes(seconds):
     """
     Convert seconds to minutes.
     """
-    return round(seconds / 60)
+    return math.floor(seconds / 60)
 
 
 # ====================== MQTT stuff

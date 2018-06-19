@@ -2,6 +2,10 @@ import os
 
 BASEDIR = os.path.abspath(os.path.dirname(__file__))
 
+MQTT_BROKERS = {
+    "HIVE": "broker.hivemq.com",
+}
+
 
 class Config:
     DEBUG = False

@@ -30,7 +30,7 @@ def index():
         get_stop_info.apply_async([stop.code, personal_room], countdown=1)
         stops_info.append(stop)
 
-    return render_template('index.html', data=stops_info)
+    return render_template('index.html', data=stops_info, room=personal_room)
 
 
 @app.route('/stops')

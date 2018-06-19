@@ -30,36 +30,108 @@
 
       <script>
 
+        // ============== Callbacks ====================
+        // called when the client loses its connection
+        function onConnectionLost(responseObject) {
+          if (responseObject.errorCode !== 0) {
+            console.log("Connection Lost. Reason:" + responseObject.errorMessage);
+          }
+
+          // try to reconnect?
+
+        }
+
+        // called when a message arrives
+        function onMessageArrived(message) {
+
+          // message body:
+          // * message.destinationName aka topic;
+          // * message.payloadString - payload;
+          // * qos, retained, duplicate - other stuff;
+
+          // console.log(message);
+          // console.log();
+          // console.log("Message: " + message.payloadString);
+
+          json_message = JSON.parse(message.payloadString);
+
+          var table = $('<table class="table table-hover" id="stop_'+ json_message.stop +'"><tbody></tbody></table>');
+
+          json_message['info'].forEach(function(item){
+            // console.log(item)
+            var row = $('<tr><td>' + item.route_name + ' (' + item.vehicle_name + ')' + '</td><td class="d-none d-sm-table-cell">' + item.from + '</td><td class="d-none d-sm-table-cell">' + item.to + '</td><td>' + Math.floor(item.time_to_point / 60) + '</td></tr>');
+
+          table.append(row);
+
+          });
+
+          $('table#stop_'+json_message.stop).remove()
+          $('div#s'+json_message.stop).remove();
+
+          $('#' + json_message.stop).append(table);
+
+        }
+
+        // called when the client connects
+        function onConnect() {
+          // Once a connection has been made, make a subscription
+          console.log("Connected");
+
+          // TODO: subscribe only to own stop;s topics
+          client.subscribe("transport/stop/+");
+
+        }
+        // =======================================
+
+
         $(document).ready(function(){
-            var socket = io.connect(location.origin + '/dashboard', {reconnection: false});
 
-            socket.on('connect', function() {
-                socket.emit('my_event', {msg: 'Client ACK'});
-            });
+          // Create a client instance
+          // Client(broker, port, clientID)  NB: clientID - should be uniq
+          // client = new Paho.MQTT.Client('broker.hivemq.com', 8000, "PublicTransport1");
+          client = new Paho.MQTT.Client('broker.hivemq.com', 8000, "{{ room }}");
 
-            socket.on('connection_update', function(msg) {
-              console.log(msg)
-            });
+          // set callback handlers
+          client.onConnectionLost = onConnectionLost;
+          client.onMessageArrived = onMessageArrived;
 
-            socket.on('update', function(msg) {
-              console.log(msg)
+          // connect the client
+          client.connect({onSuccess: onConnect});
 
-              var table = $('<table class="table table-hover" id="stop_'+ msg.stop +'"><tbody></tbody></table>')
-
-              msg['info'].forEach(function(item){
-                // console.log(item)
-                var row = $('<tr><td>' + item.route_name + ' (' + item.vehicle_name + ')' + '</td><td class="d-none d-sm-table-cell">' + item.from + '</td><td class="d-none d-sm-table-cell">' + item.to + '</td><td>' + Math.floor(item.time_to_point / 60) + '</td></tr>');
-
-                table.append(row)
-              });
-
-              $('table#stop_'+msg.stop).remove()
-              $('div#s'+msg.stop).remove();
-
-              $('#' + msg.stop).append(table);
-
-            });
         });
+
+
+
+        // $(document).ready(function(){
+        //     var socket = io.connect(location.origin + '/dashboard', {reconnection: false});
+
+        //     socket.on('connect', function() {
+        //         socket.emit('my_event', {msg: 'Client ACK'});
+        //     });
+
+        //     socket.on('connection_update', function(msg) {
+        //       console.log(msg)
+        //     });
+
+        //     socket.on('update', function(msg) {
+        //       console.log(msg)
+
+        //       var table = $('<table class="table table-hover" id="stop_'+ msg.stop +'"><tbody></tbody></table>')
+
+        //       msg['info'].forEach(function(item){
+        //         // console.log(item)
+        //         var row = $('<tr><td>' + item.route_name + ' (' + item.vehicle_name + ')' + '</td><td class="d-none d-sm-table-cell">' + item.from + '</td><td class="d-none d-sm-table-cell">' + item.to + '</td><td>' + Math.floor(item.time_to_point / 60) + '</td></tr>');
+
+        //         table.append(row)
+        //       });
+
+        //       $('table#stop_'+msg.stop).remove()
+        //       $('div#s'+msg.stop).remove();
+
+        //       $('#' + msg.stop).append(table);
+
+        //     });
+        // });
 
         $('.delete_stop').on('submit', deleteStop);
 

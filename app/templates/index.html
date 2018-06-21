@@ -31,42 +31,39 @@
       <script>
 
         // ============== Callbacks ====================
+
         // called when the client loses its connection
         function onConnectionLost(responseObject) {
           if (responseObject.errorCode !== 0) {
             console.log("Connection Lost. Reason:" + responseObject.errorMessage);
           }
-
           // try to reconnect?
-
         }
 
         // called when a message arrives
         function onMessageArrived(message) {
-
           // message body:
           // * message.destinationName aka topic;
           // * message.payloadString - payload;
           // * qos, retained, duplicate - other stuff;
 
-          // console.log(message);
-          // console.log();
+          console.log('updates...');
           // console.log("Message: " + message.payloadString);
 
           json_message = JSON.parse(message.payloadString);
 
-          var table = $('<table class="table table-hover" id="stop_'+ json_message.stop +'"><tbody></tbody></table>');
+          var table = $('<table class="table table-hover" id="stop_' + json_message.stop + '"><tbody></tbody></table>');
 
           json_message['info'].forEach(function(item){
             // console.log(item)
-            var row = $('<tr><td>' + item.route_name + ' (' + item.vehicle_name + ')' + '</td><td class="d-none d-sm-table-cell">' + item.from + '</td><td class="d-none d-sm-table-cell">' + item.to + '</td><td>' + Math.floor(item.time_to_point / 60) + '</td></tr>');
+          var row = $('<tr><td>' + item.route_name + ' (' + item.vehicle_name + ')' + '</td><td class="d-none d-sm-table-cell">' + item.from + '</td><td class="d-none d-sm-table-cell">' + item.to + '</td><td>' + Math.floor(item.time_to_point / 60) + '</td></tr>');
 
           table.append(row);
 
           });
 
-          $('table#stop_'+json_message.stop).remove()
-          $('div#s'+json_message.stop).remove();
+          $('table#stop_' + json_message.stop).remove()
+          $('div#s' + json_message.stop).remove();
 
           $('#' + json_message.stop).append(table);
 
@@ -77,8 +74,13 @@
           // Once a connection has been made, make a subscription
           console.log("Connected");
 
-          // TODO: subscribe only to own stop;s topics
-          client.subscribe("transport/stop/+");
+          var userStops = {{ data | tojson }}
+          console.log(userStops)
+
+          userStops.forEach(function(item){
+            console.log('Subscribing to ' + item.code)
+            client.subscribe("transport/stop/" + item.code);
+          })
 
         }
         // =======================================
@@ -100,39 +102,6 @@
 
         });
 
-
-
-        // $(document).ready(function(){
-        //     var socket = io.connect(location.origin + '/dashboard', {reconnection: false});
-
-        //     socket.on('connect', function() {
-        //         socket.emit('my_event', {msg: 'Client ACK'});
-        //     });
-
-        //     socket.on('connection_update', function(msg) {
-        //       console.log(msg)
-        //     });
-
-        //     socket.on('update', function(msg) {
-        //       console.log(msg)
-
-        //       var table = $('<table class="table table-hover" id="stop_'+ msg.stop +'"><tbody></tbody></table>')
-
-        //       msg['info'].forEach(function(item){
-        //         // console.log(item)
-        //         var row = $('<tr><td>' + item.route_name + ' (' + item.vehicle_name + ')' + '</td><td class="d-none d-sm-table-cell">' + item.from + '</td><td class="d-none d-sm-table-cell">' + item.to + '</td><td>' + Math.floor(item.time_to_point / 60) + '</td></tr>');
-
-        //         table.append(row)
-        //       });
-
-        //       $('table#stop_'+msg.stop).remove()
-        //       $('div#s'+msg.stop).remove();
-
-        //       $('#' + msg.stop).append(table);
-
-        //     });
-        // });
-
         $('.delete_stop').on('submit', deleteStop);
 
         function deleteStop(ev) {
@@ -141,7 +110,7 @@
 
           $.ajax({
             method: 'POST',
-            url: {{ url_for('delete_stop')|tojson }},
+            url: {{ url_for('delete_stop') | tojson }},
             data: $(this).serialize()
           });
         };
@@ -151,7 +120,7 @@
     {% else %}
 
       <div class="col">
-        <h2 class="text-center text-info">There are no stops in your dashboard</h2>
+        <h2 class="text-center text-info">There are no stops in your dashboard yet</h2>
       </div>
 
     {% endif %}
@@ -170,5 +139,3 @@
   {% endif %}
 
 {% endblock content %}
-
-

@@ -9,7 +9,6 @@ from flask_login import current_user
 from flask_socketio import join_room, emit
 
 from app import app, models, db, redis, socketio
-from app.tasks import get_stop_info
 from app.utils import TransportAPIWrapper
 
 # Lviv public transport API wrapper object
@@ -23,14 +22,11 @@ def index():
         return render_template('index.html')
 
     personal_room = session.get('personal_room')
-    stops_info = list()
-    selected_stops = current_user.stops
+    selected_stops = [{'name': stop.name, 'code': stop.code} for stop in
+                      current_user.stops]
 
-    for stop in selected_stops:
-        get_stop_info.apply_async([stop.code, personal_room], countdown=1)
-        stops_info.append(stop)
-
-    return render_template('index.html', data=stops_info, room=personal_room)
+    return render_template('index.html', data=selected_stops,
+                           room=personal_room)
 
 
 @app.route('/stops')

@@ -91,14 +91,17 @@
           // Create a client instance
           // Client(broker, port, clientID)  NB: clientID - should be uniq
           // client = new Paho.MQTT.Client('broker.hivemq.com', 8000, "PublicTransport1");
-          client = new Paho.MQTT.Client('broker.hivemq.com', 8000, "{{ room }}");
+          // client = new Paho.MQTT.Client('broker.hivemq.com', 8000, "{{ room }}");
+          client = new Paho.MQTT.Client('test.mosquitto.org', 8081, "{{ room }}");
 
           // set callback handlers
           client.onConnectionLost = onConnectionLost;
           client.onMessageArrived = onMessageArrived;
 
           // connect the client
-          client.connect({onSuccess: onConnect});
+          client.connect({onSuccess: onConnect,
+                          useSSL: true
+          });
 
         });
 

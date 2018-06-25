@@ -26,6 +26,7 @@ def get_stop_info(stop_code):
 
     # TODO: add last update (timestamp)
 
-    single(hostname="broker.hivemq.com",
+    # single(hostname="broker.hivemq.com",
+    single(hostname="test.mosquitto.org",
            topic=f"lwo/transport/stop/{stop_code}",
            payload=json.dumps(data), retain=True)

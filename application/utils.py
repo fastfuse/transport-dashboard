@@ -7,7 +7,7 @@ import math
 
 import requests
 
-from . import app
+from application import app
 
 BASE_URL = 'http://82.207.107.126:13541/SimpleRide/LAD/SM.WebApi/api'
 ALL_ROUTES = BASE_URL + '/CompositeRoute'
@@ -130,56 +130,6 @@ def to_minutes(seconds):
     """
     return math.floor(seconds / 60)
 
-
-# ====================== MQTT stuff
-# Callbacks required to publish/subscribe messages.
-
-# The callback for when the client receives a CONNACK response from the server.
-def on_connect_sub(client, userdata, flags, rc):
-    print("Connected with result code " + str(rc))
-
-    # Subscribing in on_connect() means that if we lose the connection and
-    # reconnect then subscriptions will be renewed.
-    client.subscribe("transport/test")
-
-
-def on_connect_pub(client, userdata, flags, rc):
-    print("Connected with result code " + str(rc))
-    print(f"flags: {flags}")
-
-
-def on_subscribe(client, userdata, mid, granted_qos):
-    print(f'Successfully subscribed')
-
-
-def on_publish(client, userdata, mid):
-    print(f"Message Published. mid: {mid}")
-
-
-# The callback for when a PUBLISH message is received from the server.
-def on_message(client, userdata, msg):
-    print(f'Received message from topic: {msg.topic}')
-
-    data = json.loads(msg.payload)
-    print(len(data))
-    for i in data:
-        print(i)
-
-        # print(str(msg.payload))
-
-
-def on_disconnect(client, userdata, rc):
-    if rc == 0:
-        print("Successfully disconnected.")
-    else:
-        print("Some error occurred...")
-
-
-def on_log(client, userdata, level, buf):
-    print(f"=== Log: {buf}")
-
-
-# ======================
 
 if __name__ == '__main__':
     t = TransportAPIWrapper()

@@ -79,7 +79,7 @@
 
           userStops.forEach(function(item){
             console.log('Subscribing to ' + item.code)
-            client.subscribe("transport/stop/" + item.code);
+            client.subscribe("lwo/transport/stop/" + item.code);
           })
 
         }

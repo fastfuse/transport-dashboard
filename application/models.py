@@ -3,7 +3,7 @@ import uuid
 from flask_login import UserMixin
 from werkzeug.security import generate_password_hash, check_password_hash
 
-from app import db, login
+from application import db, login
 
 user_stops = db.Table('user_stops',
                       db.Column('user_id', db.Integer,

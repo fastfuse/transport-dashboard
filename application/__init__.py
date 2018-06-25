@@ -1,3 +1,4 @@
+import logging
 import os
 
 import eventlet
@@ -11,6 +12,8 @@ from flask_socketio import SocketIO
 from flask_sqlalchemy import SQLAlchemy
 
 eventlet.monkey_patch()
+
+logging.basicConfig(level=logging.INFO)
 
 app = Flask(__name__)
 app.config.from_object(os.environ['APP_SETTINGS'])
@@ -27,6 +30,7 @@ db = SQLAlchemy(app)
 migrate = Migrate(app, db)
 
 # SocketIO
+# TODO: remove - it is not necessary anymore
 socketio = SocketIO(app, message_queue=app.config['CELERY_BROKER_URL'])
 
 # Celery
@@ -36,7 +40,7 @@ celery.conf.update(app.config)
 # Redis
 redis = r.from_url(app.config['REDIS_URL'])
 
-from app import models
+from application import models
 
 from .admin import admin_blueprint
 from .auth import auth_blueprint

@@ -1,11 +1,11 @@
+import logging
 from time import sleep
 
-from app import models
-from app.tasks import get_stop_info
-from app.utils import *
+from application import models, tasks, utils
 
-t = TransportAPIWrapper()
+t = utils.TransportAPIWrapper()
 
+log = logging.getLogger('Publisher')
 
 if __name__ == '__main__':
 
@@ -13,24 +13,20 @@ if __name__ == '__main__':
     stops_codes = [stop.code for stop in stops]
 
     while True:
-        print('Start...')
+        log.info('Start...')
 
         stops = models.Stop.query.all()
-
         stops_codes = [stop.code for stop in stops]
 
-        routes = t.get_all_routes()
-
         for code in stops_codes:
-            get_stop_info.delay(code)
+            tasks.get_stop_info.delay(code)
 
-        print('sleep...')
+        log.info('Sleep...')
         sleep(30)
 
 # TODO:
+# * fix imports issue
 # * handle errors;
-# * add logging;
-
 
 # * requests timeout + retry investigate
 

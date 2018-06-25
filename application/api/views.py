@@ -3,7 +3,7 @@ API views.
 """
 from flask import jsonify
 
-from app.utils import TransportAPIWrapper
+from application.utils import TransportAPIWrapper
 from . import api_blueprint
 
 # Lviv public transport API wrapper object
@@ -20,7 +20,3 @@ def stops_api():
 def routes_api():
     routes = transport.get_all_routes()
     return jsonify(count=len(routes), routes=routes)
-
-# @app.route('/err')
-# def test_err():
-#     return jsonify(error=404), 410

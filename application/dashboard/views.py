@@ -6,10 +6,9 @@ import json
 
 from flask import request, jsonify, session, render_template
 from flask_login import current_user
-from flask_socketio import join_room, emit
 
-from app import app, models, db, redis, socketio
-from app.utils import TransportAPIWrapper
+from application import app, models, db, redis
+from application.utils import TransportAPIWrapper
 
 # Lviv public transport API wrapper object
 transport = TransportAPIWrapper()
@@ -164,35 +163,12 @@ def delete_stop():
     stop_code = request.form.get('stop_code')
     stop = models.Stop.query.filter_by(code=stop_code).first()
 
-    current_user.stops.remove(stop)
+    if len(stop.users) == 1:
+        db.session.delete(stop)
+    else:
+        current_user.stops.remove(stop)
+        db.session.add(current_user)
 
-    db.session.add(current_user)
     db.session.commit()
 
     return jsonify(status='OK')
-
-
-# ======================= socketio stuff
-
-@socketio.on('connect', namespace='/dashboard')
-def on_connect():
-    """
-    Function to join user to his personal room.
-    """
-    room = session.get('personal_room')
-
-    # join personal room
-    join_room(room)
-    emit('connection_update', {'msg': 'Server ACK', 'sid': room})
-
-
-@socketio.on('my_event', namespace='/dashboard')
-def on_message(message):
-    emit('connection_update', {'msg': message['msg']})
-
-
-# ==================================
-
-@app.route('/test')
-def test():
-    return render_template('test.html')

@@ -5,8 +5,8 @@ Authentication views.
 from flask import request, session, render_template, flash, redirect, url_for
 from flask_login import current_user, login_user, logout_user
 
-from app import app, models, db
-from app.forms import LoginForm, RegistrationForm
+from application import app, models, db
+from application.forms import LoginForm, RegistrationForm
 
 
 @app.route('/register', methods=['GET', 'POST'])

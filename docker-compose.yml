@@ -5,6 +5,7 @@ services:
     environment:
       - APP_SETTINGS=config.DevelopmentConfig
       - FLASK_APP=application/__init__.py
+      - FLASK_DEBUG=1
       - DATABASE_URL=postgresql://lviv_pt:admin@postgres:5432/lviv_pt_db
       - REDIS_URL=redis://redis:6379/0
       - CELERY_BROKER_URL=redis://redis:6379/0
@@ -15,29 +16,44 @@ services:
     ports:
       - "5000:5000"
     depends_on:
-      - postgres
-      - celery
-      - redis
-
-  postgres:
-#    image: postgres
-    image: postgres:alpine
-    hostname: postgresdb
-    environment:
-     - POSTGRES_USER=lviv_pt
-     - POSTGRES_PASSWORD=admin
-     - POSTGRES_DB=lviv_pt_db
-    ports:
-      - "5432:5432"
+       - postgres
+       - celery
+       - redis
+#    networks:
+#       - default
+#    command: flask db upgrade
 
   celery:
-    image: 'celery'
+    environment:
+      - APP_SETTINGS=config.DevelopmentConfig
+      - FLASK_APP=application/__init__.py
+#    build: .
+#    command: celery -A application.celery worker --concurrency=10 --loglevel=info
     build:
       context: .
       dockerfile: Dockerfile.celery
 
   redis:
     image: 'redis'
+
+  postgres:
+    image: postgres
+    environment:
+      - POSTGRES_USER=lviv_pt
+      - POSTGRES_PASSWORD=admin
+      - POSTGRES_DB=lviv_pt_db
+    ports:
+      - "5432:5432"
+    volumes:
+      - ./postgres-data/postgres:/var/lib/postgresql/data
+
+  publisher:
+#    image: 'python:3.6'
+    environment:
+      - APP_SETTINGS=config.DevelopmentConfig
+      - FLASK_APP=application/__init__.py
+    build: .
+    command: python publisher.py
 
 
 #https://medium.freecodecamp.org/docker-development-workflow-a-guide-with-flask-and-postgres-db1a1843044a

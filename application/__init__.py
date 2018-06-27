@@ -45,4 +45,4 @@ app.register_blueprint(dashboard_blueprint)
 app.register_blueprint(api_blueprint)
 
 if __name__ == '__main__':
-    app.run(use_reloader=False)
+    app.run()

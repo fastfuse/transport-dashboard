@@ -5,7 +5,7 @@ import json
 
 from paho.mqtt.publish import single
 
-from application import celery, utils
+from application import celery, utils, app
 
 # Lviv public transport API wrapper object
 transport = utils.TransportAPIWrapper()
@@ -26,7 +26,8 @@ def get_stop_info(stop_code):
 
     # TODO: add last update (timestamp)
 
-    # single(hostname="broker.hivemq.com",
-    single(hostname="test.mosquitto.org",
+    broker = app.config['MQTT_BROKERS'].get('MOSQUITTO')
+
+    single(hostname=broker,
            topic=f"lwo/transport/stop/{stop_code}",
            payload=json.dumps(data), retain=True)

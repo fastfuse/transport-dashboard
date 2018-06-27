@@ -1,0 +1,40 @@
+version: '3'
+
+services:
+  app:
+    environment:
+      - APP_SETTINGS=config.DevelopmentConfig
+      - FLASK_APP=application/__init__.py
+      - DATABASE_URL=postgresql://lviv_pt:admin@postgres/lviv_pt_db
+      - REDIS_URL=redis://redis:6379/0
+      - CELERY_BROKER_URL=redis://redis:6379/0
+      - CELERY_RESULT_BACKEND=redis://redis:6379/0
+    build:
+     context: .
+     dockerfile: Dockerfile
+    ports:
+      - "5000:5000"
+    depends_on:
+      - postgres
+      - celery
+      - redis
+
+  postgres:
+#    image: postgres
+    image: postgres:alpine
+    environment:
+     - POSTGRES_USER=lviv_pt
+     - POSTGRES_PASSWORD=admin
+     - POSTGRES_DB=lviv_pt_db
+
+  celery:
+    image: 'celery'
+    build:
+      context: .
+      dockerfile: Dockerfile.celery
+
+  redis:
+    image: 'redis'
+
+
+#https://medium.freecodecamp.org/docker-development-workflow-a-guide-with-flask-and-postgres-db1a1843044a

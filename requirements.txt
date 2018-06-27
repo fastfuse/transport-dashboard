@@ -5,8 +5,6 @@ Flask-Script
 flask-migrate
 flask-admin
 redis
-eventlet
-flask-socketio
 requests
 gunicorn
 psycopg2

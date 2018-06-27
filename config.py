@@ -1,13 +1,14 @@
 import os
 
-BASEDIR = os.path.abspath(os.path.dirname(__file__))
-
-MQTT_BROKERS = {
-    "HIVE": "broker.hivemq.com",
-}
-
 
 class Config:
+    BASEDIR = os.path.abspath(os.path.dirname(__file__))
+
+    MQTT_BROKERS = {
+        "HIVE": "broker.hivemq.com",
+        "MOSQUITTO": "test.mosquitto.org",
+    }
+
     DEBUG = False
     CSRF_ENABLED = True
     SECRET_KEY = os.environ.get('SECRET_KEY',
@@ -27,10 +28,6 @@ class Config:
 
 
 class DevelopmentConfig(Config):
-    DEBUG = True
-
-
-class TestConfig(Config):
     DEBUG = True
 
 

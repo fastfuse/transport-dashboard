@@ -5,7 +5,7 @@ services:
     environment:
       - APP_SETTINGS=config.DevelopmentConfig
       - FLASK_APP=application/__init__.py
-      - DATABASE_URL=postgresql://lviv_pt:admin@postgres/lviv_pt_db
+      - DATABASE_URL=postgresql://lviv_pt:admin@postgres:5432/lviv_pt_db
       - REDIS_URL=redis://redis:6379/0
       - CELERY_BROKER_URL=redis://redis:6379/0
       - CELERY_RESULT_BACKEND=redis://redis:6379/0
@@ -22,10 +22,13 @@ services:
   postgres:
 #    image: postgres
     image: postgres:alpine
+    hostname: postgresdb
     environment:
      - POSTGRES_USER=lviv_pt
      - POSTGRES_PASSWORD=admin
      - POSTGRES_DB=lviv_pt_db
+    ports:
+      - "5432:5432"
 
   celery:
     image: 'celery'

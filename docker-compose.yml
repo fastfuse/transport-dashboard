@@ -38,3 +38,5 @@ services:
 
 
 #https://medium.freecodecamp.org/docker-development-workflow-a-guide-with-flask-and-postgres-db1a1843044a
+#docker-compose build
+#docker-compose up app

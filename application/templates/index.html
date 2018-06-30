@@ -67,7 +67,7 @@
 
           $('#' + json_message.stop).append(table);
 
-        }
+        };
 
         // called when the client connects
         function onConnect() {
@@ -75,12 +75,12 @@
           console.log("Connected");
 
           var userStops = {{ data | tojson }}
-          console.log(userStops)
+          console.log(userStops);
 
           userStops.forEach(function(item){
-            console.log('Subscribing to ' + item.code)
+            console.log('Subscribing to ' + item.code);
             client.subscribe("lwo/transport/stop/" + item.code);
-          })
+          });
 
         }
         // =======================================

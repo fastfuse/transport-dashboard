@@ -172,3 +172,22 @@ def delete_stop():
     db.session.commit()
 
     return jsonify(status='OK')
+
+
+@app.route('/clean_cache')
+def clean_cache():
+    """
+    Clean Redis cache.
+    """
+    stops = redis.get('stops')
+
+    if stops:
+        redis.delete('stops')
+
+    routes = [k for k in redis.keys() if b'route' in k]
+
+    if routes:
+        for r in routes:
+            redis.delete(r)
+
+    return jsonify(status='OK')

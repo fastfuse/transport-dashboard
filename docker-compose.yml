@@ -19,19 +19,16 @@ services:
        - postgres
        - celery
        - redis
-#    networks:
-#       - default
-#    command: flask db upgrade
 
   celery:
     environment:
       - APP_SETTINGS=config.DevelopmentConfig
       - FLASK_APP=application/__init__.py
 #    build: .
-#    command: celery -A application.celery worker --concurrency=10 --loglevel=info
+#    command: celery -A application.tasks:celery worker --concurrency=3 --loglevel=info
     build:
       context: .
-      dockerfile: Dockerfile.celery
+      dockerfile: Dockerfile-celery
 
   redis:
     image: 'redis'
@@ -51,7 +48,7 @@ services:
 #    image: 'python:3.6'
     environment:
       - APP_SETTINGS=config.DevelopmentConfig
-      - FLASK_APP=application/__init__.py
+#      - FLASK_APP=application/__init__.py
     build: .
     command: python publisher.py
 

@@ -3,6 +3,7 @@ RUN mkdir /app
 WORKDIR /app
 COPY . /app
 RUN pip install --no-cache-dir -r requirements.txt
+RUN echo 'Helllllllllo'
 EXPOSE 5000
 ENTRYPOINT flask run --no-reload --host=0.0.0.0
 #ENTRYPOINT gunicorn -w 4 application:app

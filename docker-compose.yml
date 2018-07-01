@@ -3,9 +3,9 @@ version: '3'
 services:
   app:
     environment:
-      - APP_SETTINGS=config.DevelopmentConfig
+      - APP_SETTINGS=config.ProductionConfig
       - FLASK_APP=application/__init__.py
-      - FLASK_DEBUG=1
+#      - FLASK_DEBUG=1
       - DATABASE_URL=postgresql://lviv_pt:admin@postgres:5432/lviv_pt_db
       - REDIS_URL=redis://redis:6379/0
       - CELERY_BROKER_URL=redis://redis:6379/0
@@ -20,19 +20,6 @@ services:
        - celery
        - redis
 
-  celery:
-    environment:
-      - APP_SETTINGS=config.DevelopmentConfig
-      - FLASK_APP=application/__init__.py
-#    build: .
-#    command: celery -A application.tasks:celery worker --concurrency=3 --loglevel=info
-    build:
-      context: .
-      dockerfile: Dockerfile-celery
-
-  redis:
-    image: 'redis'
-
   postgres:
     image: postgres
     environment:
@@ -44,15 +31,28 @@ services:
     volumes:
       - ./postgres-data/postgres:/var/lib/postgresql/data
 
-  publisher:
-#    image: 'python:3.6'
+  celery:
     environment:
-      - APP_SETTINGS=config.DevelopmentConfig
+      - APP_SETTINGS=config.ProductionConfig
 #      - FLASK_APP=application/__init__.py
-    build: .
-    command: python publisher.py
+      - REDIS_URL=redis://redis:6379/0
+    user: nobody
+    build:
+      context: .
+      dockerfile: Dockerfile-celery
 
+  redis:
+    image: 'redis'
 
-#https://medium.freecodecamp.org/docker-development-workflow-a-guide-with-flask-and-postgres-db1a1843044a
-#docker-compose build
-#docker-compose up app
+  publisher:
+    environment:
+      - APP_SETTINGS=config.ProductionConfig
+      - DATABASE_URL=postgresql://lviv_pt:admin@postgres:5432/lviv_pt_db
+      - REDIS_URL=redis://redis:6379/0
+      - CELERY_BROKER_URL=redis://redis:6379/0
+      - CELERY_RESULT_BACKEND=redis://redis:6379/0
+    build:
+      context: .
+      dockerfile: Dockerfile-publisher
+    depends_on:
+       - postgres

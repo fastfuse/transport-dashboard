@@ -7,6 +7,6 @@ flask-admin
 redis
 requests
 gunicorn
-psycopg2
+psycopg2-binary
 flask-wtf
 flask-login

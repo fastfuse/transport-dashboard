@@ -16,12 +16,12 @@ services:
     ports:
       - "5000:5000"
     depends_on:
-       - postgres
-       - celery
-       - redis
+      - postgres
+      - celery
+      - redis
 
   postgres:
-    image: postgres
+    image: 'postgres:alpine'
     environment:
       - POSTGRES_USER=lviv_pt
       - POSTGRES_PASSWORD=admin
@@ -42,7 +42,7 @@ services:
       dockerfile: Dockerfile-celery
 
   redis:
-    image: 'redis'
+    image: 'redis:alpine'
 
   publisher:
     environment:
@@ -55,4 +55,11 @@ services:
       context: .
       dockerfile: Dockerfile-publisher
     depends_on:
-       - postgres
+      - postgres
+
+  nginx:
+    build: ./nginx
+    ports:
+      - "80:80"
+    depends_on:
+      - app

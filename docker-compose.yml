@@ -1,4 +1,5 @@
-version: '3'
+# Version 2 is required for AWS
+version: '2'
 
 services:
   app:

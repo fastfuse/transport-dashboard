@@ -1,8 +1,8 @@
 #### Docker flow
 
-Build
+Build all or certain service
 ```sh
-$ docker-compose build
+$ docker-compose build [service]
 ```
 
 Up

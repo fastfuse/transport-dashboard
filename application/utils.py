@@ -7,7 +7,7 @@ import math
 
 import requests
 
-from application import app
+# from application import app
 
 BASE_URL = 'http://82.207.107.126:13541/SimpleRide/LAD/SM.WebApi/api'
 ALL_ROUTES = BASE_URL + '/CompositeRoute'
@@ -123,7 +123,7 @@ class TransportAPIWrapper:
 
 # ============= Custom Jinja template filters.
 
-@app.template_filter()
+# @app.template_filter()
 def to_minutes(seconds):
     """
     Convert seconds to minutes.
@@ -133,3 +133,5 @@ def to_minutes(seconds):
 
 if __name__ == '__main__':
     t = TransportAPIWrapper()
+    s = t.get_all_stops()
+    print()

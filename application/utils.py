@@ -145,9 +145,15 @@ class TransportAPIWrapper:
         :return: routes
         """
 
-        resp = requests.get(ALL_ROUTES).json()
+        routes = requests.get(ALL_ROUTES).json()
 
-        return resp
+        stops = self.get_all_stops()
+
+        for route in routes:
+            stops_list = [stops.get(str(stop_code)) for stop_code in route['stops']]
+            route['stops'] = stops_list
+
+        return routes
 
     def get_all_stops(self):
         """
@@ -162,8 +168,6 @@ class TransportAPIWrapper:
         stops_objects = [stop_object(*s[:-1]) for s in stops_data]
 
         stops = {stop.code: stop._asdict() for stop in stops_objects}
-
-        json.dumps(stops)
 
         return stops
 

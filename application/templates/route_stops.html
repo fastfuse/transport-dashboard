@@ -4,6 +4,8 @@
 
   <div class="col-md-8 offset-md-2 col">
 
+    {# {{route}} #}
+
     <div class="row">
       <div class="col-md-8 offset-md-2 col">
         <h2 class="text-center text-info">{{ route.name }}</h2>
@@ -12,7 +14,7 @@
           <table class="table table-hover">
             <tbody id="fbody">
 
-            {% for _, stop in stops.items() %}
+            {% for stop in route.stops %}
 
               <tr>
                 <td>{{ stop.name }}</td>
@@ -20,11 +22,11 @@
                 {% if current_user.is_authenticated %}
                   <td>
                     <form class="add_stop">
-                      <input type="hidden" name="internal_id" value="{{ stop.internal_id }}">
+                      <input type="hidden" name="internal_id" value="{{ stop.external_id }}">
                       <input type="hidden" name="name" value="{{ stop.name }}">
                       <input type="hidden" name="code" value="{{ stop.code }}">
-                      <input type="hidden" name="lat" value="{{ stop.location[0] }}">
-                      <input type="hidden" name="lng" value="{{ stop.location[1] }}">
+                      <input type="hidden" name="lat" value="{{ stop.latitude }}">
+                      <input type="hidden" name="lng" value="{{ stop.longitude }}">
 
                       {% if stop.code in user_stops %}
                         <button class="btn  btn-block btn-outline-success btn-success add-btn" disabled title="Stop is already added">

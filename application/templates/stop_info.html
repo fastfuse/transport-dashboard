@@ -8,28 +8,28 @@
 
     <div class="row">
       <div class="col-md-6 offset-md-3 col">
-        <h2 class="text-center text-info">{{ stop.name }}</h2>
+        <h2 class="text-center text-info">{{ stop_info.name }}</h2>
 
         <div class="table">
           <table class="table table-hover">
             <body id="fbody">
 
-              {% for item in stop_info %}
+              {% for item in stop_info.timetable %}
 
               <tr>
                 <td>
-                  {{ item.route_name }} ({{ item.vehicle_name }})
+                  {{ item.route }}
                 </td>
 
-                <td class="d-none d-sm-table-cell">
+{#                 <td class="d-none d-sm-table-cell">
                   {{ item.from }}
-                </td>
+                </td> #}
 
                 <td class="d-none d-sm-table-cell">
-                  {{ item.to }}
+                  {{ item.end_stop }}
                 </td>
                 <td>
-                  {{ item.time_to_point | to_minutes }}
+                  {{ item.time_left }}
                 </td>
 
               </tr>
@@ -47,7 +47,7 @@
     <h2 class="text-center text-info">Some error occured :(</h2>
 
   {% endif %}
- 
+
   </div>
 
 {% endblock content %}

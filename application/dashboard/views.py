@@ -57,11 +57,13 @@ def show_all_routes():
     List all routes.
     """
     # TODO: add pagination
+    redis.delete('routes')
 
     routes = redis.get('routes')
 
     if not routes:
-        routes = transport.get_all_routes()
+        routes_api = transport.get_all_routes()
+        routes = {route['external_id']: route for route in routes_api}
         # cache
         redis.set('routes', json.dumps(routes))
     else:
@@ -77,8 +79,6 @@ def show_route_stops(route_id):
     """
     # TODO: add pagination
 
-    cache_key = f'route_{route_id}'
-
     routes = redis.get('routes')
 
     if not routes:
@@ -90,29 +90,12 @@ def show_route_stops(route_id):
 
     route = routes.get(route_id)
 
-    if cache_key.encode() in redis.keys():
-        route_stops = json.loads(redis.get(cache_key).decode())
-    else:
-        route_stops = transport.get_route_stops(route_id)
-        # store to cache
-        redis.set(cache_key, json.dumps(route_stops))
-
     if current_user.is_authenticated:
         user_stops = [stop.code for stop in current_user.stops]
     else:
         user_stops = list()
 
-    return render_template('route_stops.html', route=route, stops=route_stops,
-                           user_stops=user_stops)
-
-
-@app.route('/route_map/<route_id>')
-def show_route_map(route_id):
-    """
-    Display route on map.
-    TDB.
-    """
-    pass
+    return render_template('route_stops.html', route=route, user_stops=user_stops)
 
 
 @app.route('/add_stop', methods=["POST"])
@@ -141,18 +124,10 @@ def monitor_stop(stop_code):
     """
     Get info about certain stop.
     """
-    stops = redis.get('stops')
 
-    if not stops:
-        stops = transport.get_all_stops()
-        redis.set('stops', json.dumps(stops))
-    else:
-        stops = json.loads(stops.decode())
-
-    stop = stops.get(stop_code)
     stop_info = transport.monitor_stop(stop_code)
 
-    return render_template('stop_info.html', stop=stop, stop_info=stop_info)
+    return render_template('stop_info.html', stop_info=stop_info)
 
 
 @app.route('/delete_stop', methods=['POST'])

@@ -18,6 +18,7 @@ services:
       - postgres
       - celery
       - redis
+      - publisher
 
   postgres:
     image: 'postgres:alpine'

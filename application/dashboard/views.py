@@ -101,10 +101,10 @@ def show_route_stops(route_id):
 @app.route('/add_stop', methods=["POST"])
 def add_stop():
     stop = models.Stop.query.filter_by(
-        internal_id=request.form['internal_id']).first()
+        external_id=request.form['external_id']).first()
 
     if not stop:
-        stop = models.Stop(internal_id=request.form['internal_id'],
+        stop = models.Stop(external_id=request.form['external_id'],
                            name=request.form['name'],
                            code=request.form['code'],
                            latitude=request.form['lat'],

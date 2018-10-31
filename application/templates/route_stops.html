@@ -22,7 +22,7 @@
                 {% if current_user.is_authenticated %}
                   <td>
                     <form class="add_stop">
-                      <input type="hidden" name="internal_id" value="{{ stop.external_id }}">
+                      <input type="hidden" name="external_id" value="{{ stop.external_id }}">
                       <input type="hidden" name="name" value="{{ stop.name }}">
                       <input type="hidden" name="code" value="{{ stop.code }}">
                       <input type="hidden" name="lat" value="{{ stop.latitude }}">

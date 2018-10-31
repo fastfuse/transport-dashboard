@@ -21,7 +21,7 @@ def get_stop_info(stop_code):
 
     data = {
         'stop': stop_code,
-        'info': info[:5],
+        'info': info['timetable'][:5],
     }
 
     # TODO: add last update (timestamp)

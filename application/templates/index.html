@@ -56,7 +56,7 @@
 
           json_message['info'].forEach(function(item){
             // console.log(item)
-          var row = $('<tr><td>' + item.route_name + ' (' + item.vehicle_name + ')' + '</td><td class="d-none d-sm-table-cell">' + item.from + '</td><td class="d-none d-sm-table-cell">' + item.to + '</td><td>' + Math.floor(item.time_to_point / 60) + '</td></tr>');
+          var row = $('<tr><td>' + item.route + '</td><td>' + item.end_stop + '</td><td>' + item.time_left + '</td></tr>');
 
           table.append(row);
 

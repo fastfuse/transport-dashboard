@@ -5,56 +5,12 @@ services:
     environment:
       - APP_SETTINGS=config.ProductionConfig
       - FLASK_APP=application/__init__.py
-      - DATABASE_URL=postgresql://lviv_pt:admin@postgres:5432/lviv_pt_db
-      - REDIS_URL=redis://redis:6379/0
-      - CELERY_BROKER_URL=redis://redis:6379/0
-      - CELERY_RESULT_BACKEND=redis://redis:6379/0
+
     build:
      context: .
      dockerfile: Dockerfile
     ports:
       - "5000:5000"
-    depends_on:
-      - postgres
-      - celery
-      - redis
-      - publisher
-
-  postgres:
-    image: 'postgres:alpine'
-    environment:
-      - POSTGRES_USER=lviv_pt
-      - POSTGRES_PASSWORD=admin
-      - POSTGRES_DB=lviv_pt_db
-    ports:
-      - "5432:5432"
-    volumes:
-      - ./postgres-data/postgres:/var/lib/postgresql/data
-
-  celery:
-    environment:
-      - APP_SETTINGS=config.ProductionConfig
-      - REDIS_URL=redis://redis:6379/0
-    user: nobody
-    build:
-      context: .
-      dockerfile: Dockerfile-celery
-
-  redis:
-    image: 'redis:alpine'
-
-  publisher:
-    environment:
-      - APP_SETTINGS=config.ProductionConfig
-      - DATABASE_URL=postgresql://lviv_pt:admin@postgres:5432/lviv_pt_db
-      - REDIS_URL=redis://redis:6379/0
-      - CELERY_BROKER_URL=redis://redis:6379/0
-      - CELERY_RESULT_BACKEND=redis://redis:6379/0
-    build:
-      context: .
-      dockerfile: Dockerfile-publisher
-    depends_on:
-      - postgres
 
   nginx:
     build: ./nginx

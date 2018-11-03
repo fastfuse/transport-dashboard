@@ -6,4 +6,4 @@ COPY . /app
 RUN pip install -U pip
 RUN pip install --no-cache-dir -r requirements.txt
 EXPOSE 5000
-ENTRYPOINT gunicorn -w 4 application:app -b 0.0.0.0:5000
+ENTRYPOINT flask run --host=0.0.0.0

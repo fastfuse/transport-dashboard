@@ -1,7 +1,7 @@
 version: '3'
 
 services:
-  app:
+  app_prod:
     environment:
       - APP_SETTINGS=config.ProductionConfig
       - FLASK_APP=application/__init__.py
@@ -9,11 +9,33 @@ services:
       - REDIS_URL=redis://redis:6379/0
       - CELERY_BROKER_URL=redis://redis:6379/0
       - CELERY_RESULT_BACKEND=redis://redis:6379/0
+
     build:
      context: .
      dockerfile: Dockerfile
+
+    depends_on:
+      - postgres
+      - celery
+      - redis
+      - publisher
+
+  app_dev:
+    environment:
+      - APP_SETTINGS=config.DevelopmentConfig
+      - FLASK_APP=application/__init__.py
+      - DATABASE_URL=postgresql://lviv_pt:admin@postgres:5432/lviv_pt_db
+      - REDIS_URL=redis://redis:6379/0
+      - CELERY_BROKER_URL=redis://redis:6379/0
+      - CELERY_RESULT_BACKEND=redis://redis:6379/0
+
+    build:
+     context: .
+     dockerfile: Dockerfile-dev
+
     ports:
       - "5000:5000"
+
     depends_on:
       - postgres
       - celery
@@ -61,4 +83,4 @@ services:
     ports:
       - "80:80"
     depends_on:
-      - app
+      - app_prod

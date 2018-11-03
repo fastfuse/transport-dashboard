@@ -4,5 +4,6 @@ RUN echo 'Dockerfile-Publisher'
 RUN mkdir /app
 WORKDIR /app
 COPY . /app
+RUN pip install -U pip
 RUN pip install -r requirements.txt
 ENTRYPOINT python publisher.py

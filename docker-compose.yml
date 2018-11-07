@@ -50,8 +50,8 @@ services:
       - POSTGRES_DB=lviv_pt_db
     ports:
       - "5432:5432"
-    volumes:
-      - ./postgres-data/postgres:/var/lib/postgresql/data
+   # volumes:
+    #  - ./postgres-data/postgres:/var/lib/postgresql/data
 
   celery:
     environment:

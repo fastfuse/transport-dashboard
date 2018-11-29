@@ -75,6 +75,7 @@
           console.log("Connected");
 
           var userStops = {{ data | tojson }}
+          console.log("User stops:");
           console.log(userStops);
 
           userStops.forEach(function(item){

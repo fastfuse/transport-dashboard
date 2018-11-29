@@ -11,15 +11,16 @@ if __name__ == '__main__':
 
     while True:
         try:
-            stops = models.Stop.query.all()
-            stops_codes = [stop.code for stop in stops]
-
             log.info('Start...')
 
             stops = models.Stop.query.all()
+
+            log.info(f"Found {len(stops)} stops")
+
             stops_codes = [stop.code for stop in stops]
 
             for code in stops_codes:
+                log.info(f"Getting info for stop code {code}")
                 tasks.get_stop_info.delay(code)
 
             log.info('Sleep...')
@@ -29,20 +30,4 @@ if __name__ == '__main__':
             log.warning('Could not connect to PSQL. Sleep...')
             sleep(5)
 
-# TODO:
-# * fix imports issue
-# * handle errors;
-
-# * requests timeout + retry investigate
-
-# pseudocode:
-# while true:
-#     ...
-#     for stop in stops:
-#         execute(stop)
-#
-#     sleep(30)
-
-# looks_lively_listener
-
-# use flask's log?
+# TODO: switch to celery beat
